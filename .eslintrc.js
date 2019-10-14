@@ -30,5 +30,9 @@ module.exports = {
         alphabetize: { order: 'asc', ignoreCase: true },
       },
     ],
+    'no-cond-assign': 'off',
+    'global-require': 'off',
+    'import/no-dynamic-require': 'off',
+    'no-useless-escape': 'off',
   },
 };
