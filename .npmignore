@@ -6,3 +6,5 @@ jest.config.js
 tests/
 nodemon.json
 README.md
+.env
+.env.*
