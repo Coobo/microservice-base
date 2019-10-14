@@ -6,6 +6,7 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const helmet = require('helmet');
 
+const ContainerInjectorMiddleware = require('../middlewares/container-in-request');
 const InternalExceptionHandlerMiddleware = require('../middlewares/exception-handler');
 const InternalRequestIdentifierMiddleware = require('../middlewares/request-identifier');
 
@@ -31,6 +32,7 @@ class Server {
     this._middlewares = {
       exceptionHandler: InternalExceptionHandlerMiddleware,
       requestIdentifier: InternalRequestIdentifierMiddleware,
+      containerInjector: ContainerInjectorMiddleware,
     };
 
     this._setConfigDefaults();
@@ -42,6 +44,7 @@ class Server {
     this._enableRequestParsers();
 
     this.use(this._middlewares.requestIdentifier);
+    this.use(this._middlewares.containerInjector);
     this.use(LoggerMiddleware);
     this._enableStatusRoute();
   }
