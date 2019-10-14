@@ -1,3 +1,5 @@
+import 'express-async-errors';
+
 const compression = require('compression');
 const cors = require('cors');
 const express = require('express');
