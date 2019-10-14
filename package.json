@@ -4,6 +4,7 @@
   "description": "Microservice Base Application",
   "main": "dist/index.js",
   "author": "VIMGAS <victormoraesgs@gmail.com>",
+  "repository": "https://github.com/Coobo/microservice-base",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -12,7 +13,7 @@
     "test": "jest --bail",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "release": "standard-version && yarn run build && npm publish --access public"
+    "release": "standard-version && yarn run build"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
