@@ -1,0 +1,61 @@
+{
+  "name": "@coobo/base",
+  "version": "0.0.1",
+  "description": "Microservice Base Application",
+  "main": "dist/index.js",
+  "author": "VIMGAS <victormoraesgs@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "build": "sucrase ./src -d ./dist --transforms imports",
+    "test": "jest --bail",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "release": "standard-version && yarn run build && npm publish --access public"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@sucrase/jest-plugin": "^2.0.0",
+    "commitlint": "^8.2.0",
+    "doctoc": "^1.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import-helpers": "^1.0.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.2",
+    "mongodb-memory-server-global": "^5.2.8",
+    "nodemon": "^1.19.3",
+    "prettier": "^1.18.2",
+    "standard-version": "^7.0.0",
+    "sucrase": "^3.10.1",
+    "supertest": "^4.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "precommit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "yarn test",
+      "git add"
+    ],
+    "tests/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "README.md": [
+      "doctoc README.md --title=## Table of contents",
+      "git add"
+    ]
+  }
+}
