@@ -39,7 +39,7 @@ function DatabaseFactory({ Config, Logger }) {
       `${Config.get(
         'app.name',
         'Application',
-      ).capitalize()} successfully connected to MongoDB`,
+      )} successfully connected to MongoDB`,
     ),
   );
 
