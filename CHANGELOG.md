@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/Coobo/microservice-base/compare/v1.1.0...v1.2.0) (2019-10-14)
+
+
+### Bug Fixes
+
+* log default levels ([8a03eb7](https://github.com/Coobo/microservice-base/commit/8a03eb70e7435a94268095a0c0ca21a24e4fdbca))
+
 ## [1.1.0](https://github.com/Coobo/microservice-base/compare/v1.0.0...v1.1.0) (2019-10-14)
 
 
