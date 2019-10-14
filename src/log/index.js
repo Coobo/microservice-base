@@ -8,8 +8,8 @@ class Logger {
     this._registerDefaultConfiguration();
 
     let loggerLevel = 'info';
-    if (Env.get('NODE_ENV') === 'testing') loggerLevel = 'fatal';
-    if (Env.get('NODE_ENV') === 'development') loggerLevel = 'silent';
+    if (Env.get('NODE_ENV') === 'testing') loggerLevel = 'silent';
+    if (Env.get('NODE_ENV') === 'development') loggerLevel = 'trace';
 
     this._logger = pino({
       prettyPrint: Config.get('log.pretty', false),
