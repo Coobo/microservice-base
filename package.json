@@ -32,7 +32,6 @@
     "lint-staged": "^9.4.2",
     "mongodb-memory-server-global": "^5.2.8",
     "nodemon": "^1.19.3",
-    "pino-pretty": "^3.2.2",
     "prettier": "^1.18.2",
     "standard-version": "^7.0.0",
     "sucrase": "^3.10.1",
@@ -77,6 +76,7 @@
     "lodash.set": "^4.3.2",
     "mongoose": "^5.7.4",
     "pino": "^5.13.5",
+    "pino-pretty": "^3.2.2",
     "uuid": "^3.3.3",
     "youch": "^2.0.10"
   }
