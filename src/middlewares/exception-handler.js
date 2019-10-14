@@ -18,6 +18,7 @@ const Youch = require('youch');
  * @returns {void}
  */
 async function ExceptionHandlerMiddleware(err, req, res, next) {
+  req.log.error({ msg: 'An error ocurred while operating the request.', err });
   if (
     process.env.NODE_ENV === 'development' ||
     process.env.NODE_ENV === 'testing'
