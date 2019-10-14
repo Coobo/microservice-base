@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/Coobo/microservice-base/compare/v1.0.0...v1.1.0) (2019-10-14)
+
+
+### Features
+
+* pino-pretty installed on the right place ([eab4511](https://github.com/Coobo/microservice-base/commit/eab4511b2db3aebf7d04d965ae176ff4b7e59819))
+
 ## [1.0.0](https://github.com/Coobo/microservice-base/compare/v0.0.4...v1.0.0) (2019-10-14)
 
 ### [0.0.4](https://github.com/Coobo/microservice-base/compare/v0.0.3...v0.0.4) (2019-10-14)
