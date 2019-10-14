@@ -23,7 +23,7 @@ class Server {
    * @param {object} DependencyInjection
    * @param {import('@coobo/config').Config} DependencyInjection.Config
    */
-  constructor({ Config }) {
+  constructor({ Config, LoggerMiddleware }) {
     this._config = Config;
     this._express = express();
     this._middlewares = {
@@ -40,6 +40,7 @@ class Server {
     this._enableRequestParsers();
 
     this.use(this._middlewares.requestIdentifier);
+    this.use(LoggerMiddleware);
     this._enableStatusRoute();
   }
 

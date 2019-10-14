@@ -3,10 +3,16 @@ import request from 'supertest';
 
 import config from '../../src/config';
 import container from '../../src/di';
+import env from '../../src/env';
+import Logger from '../../src/log';
+import LoggerMiddleware from '../../src/middlewares/logger';
 import server from '../../src/server';
 
 const asClass = container.resolve('asClass');
+const asFunction = container.resolve('asFunction');
+const asValue = container.resolve('asValue');
 container.register({
+  appRoot: asValue(path.join(__dirname, 'env')),
   Application: asClass(
     class App {
       configPath() {
@@ -14,8 +20,11 @@ container.register({
       }
     },
   ),
+  Env: asClass(env).singleton(),
   Config: asClass(config).singleton(),
   Server: asClass(server).singleton(),
+  LoggerClass: asClass(Logger).singleton(),
+  LoggerMiddleware: asFunction(LoggerMiddleware).singleton(),
 });
 
 let Server;

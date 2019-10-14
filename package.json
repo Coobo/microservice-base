@@ -30,6 +30,7 @@
     "lint-staged": "^9.4.2",
     "mongodb-memory-server-global": "^5.2.8",
     "nodemon": "^1.19.3",
+    "pino-pretty": "^3.2.2",
     "prettier": "^1.18.2",
     "standard-version": "^7.0.0",
     "sucrase": "^3.10.1",
@@ -66,11 +67,13 @@
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6-alpha.5",
+    "express-pino-logger": "^4.0.0",
     "helmet": "^3.21.1",
     "lodash.get": "^4.4.2",
     "lodash.mergewith": "^4.6.2",
     "lodash.set": "^4.3.2",
     "mongoose": "^5.7.4",
+    "pino": "^5.13.5",
     "uuid": "^3.3.3",
     "youch": "^2.0.10"
   }
