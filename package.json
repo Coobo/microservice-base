@@ -13,6 +13,7 @@
     "test": "jest --bail",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "prerelease": "yarn run build",
     "release": "standard-version"
   },
   "devDependencies": {
@@ -59,9 +60,6 @@
       "doctoc README.md --title=## Table of contents",
       "git add"
     ]
-  },
-  "standard-version": {
-    "prerelease": "yarn run build"
   },
   "dependencies": {
     "awilix": "^4.2.2",
