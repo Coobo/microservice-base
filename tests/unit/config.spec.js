@@ -2,8 +2,11 @@ import path from 'path';
 
 import config from '../../src/config';
 import container from '../../src/di';
+import Logger from '../../src/log';
+import LoggerMiddleware from '../../src/middlewares/logger';
 
 const asClass = container.resolve('asClass');
+const asFunction = container.resolve('asFunction');
 container.register({
   Application: asClass(
     class App {
@@ -13,6 +16,8 @@ container.register({
     },
   ),
   Config: asClass(config),
+  LoggerClass: asClass(Logger).singleton(),
+  LoggerMiddleware: asFunction(LoggerMiddleware).singleton(),
 });
 
 let Config;

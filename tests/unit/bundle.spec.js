@@ -1,7 +1,15 @@
 import path from 'path';
 
+import app from '../../src/app';
 import Container from '../../src/index';
 
+app.prototype.configPath = () => {
+  return path.join(__dirname, 'config-path');
+};
+
+const asClass = Container.resolve('asClass');
+
+Container.register('Application', asClass(app));
 Container.register('appRoot', {
   resolve: () => path.join(__dirname, '../../'),
 });

@@ -14,7 +14,6 @@ class Config {
     const configPath = Application.configPath();
     this._config = requireAll({
       dirname: configPath,
-      filter: /^((?!index).)*$/,
       resolve: mod => {
         mod = esmResolver(mod);
         if (typeof mod === 'function') mod = mod(Container.cradle);
