@@ -76,6 +76,33 @@ class Server {
     middlewares.forEach(middleware => this._express.use(middleware));
   }
 
+  /**
+   * Open Router
+   *
+   * @method openRouter
+   * @public
+   *
+   * @returns {import('express').Router}
+   */
+  openRouter() {
+    return new express.Router();
+  }
+
+  /**
+   * Use Router
+   *
+   * @method useRouter
+   * @public
+   *
+   * @param {string} basePath
+   * @param {import('express').Router} router
+   *
+   * @returns {void}
+   */
+  useRouter(basePath = '/', router) {
+    this._express.use(basePath, router);
+  }
+
   _setConfigDefaults() {
     this._config.defaults('server', {
       proxy: true,

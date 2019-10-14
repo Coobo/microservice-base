@@ -70,4 +70,33 @@ describe('Server Class', () => {
       })
       .expect(500, done);
   });
+
+  it('should open a new router', () => {
+    const router = Server.openRouter();
+
+    expect(typeof router.get).toBe('function');
+    expect(typeof router.post).toBe('function');
+    expect(typeof router.put).toBe('function');
+    expect(typeof router.delete).toBe('function');
+    expect(typeof router.route).toBe('function');
+  });
+
+  it('should register a new router and make the endpoint available', done => {
+    const router = Server.openRouter();
+
+    router.get('/children', (req, res) =>
+      res.status(200).json({ message: 'ok' }),
+    );
+
+    Server.useRouter('/parent', router);
+
+    request(Server._express)
+      .get('/parent/children')
+      .expect('Content-Type', /json/)
+      .expect('Request-Id', /(.*-?)+/)
+      .expect(res => {
+        res.body.message = 'ok';
+      })
+      .expect(200, done);
+  });
 });
