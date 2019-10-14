@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/Coobo/microservice-base/compare/v1.3.0...v1.4.0) (2019-10-14)
+
+
+### Features
+
+* container injector automatically inputed to express ([a054f3b](https://github.com/Coobo/microservice-base/commit/a054f3b37ee7e4fa22f9cd3bd7d221d1b72e7bf4))
+* server router registering ([f015086](https://github.com/Coobo/microservice-base/commit/f01508655ed6a62bcc942b7faf5e75e513c5af76))
+
 ## [1.3.0](https://github.com/Coobo/microservice-base/compare/v1.2.0...v1.3.0) (2019-10-14)
 
 
