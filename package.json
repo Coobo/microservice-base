@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon src/start.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
     "test": "jest --bail",
     "test:watch": "jest --watch",

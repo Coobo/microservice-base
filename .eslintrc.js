@@ -34,5 +34,6 @@ module.exports = {
     'global-require': 'off',
     'import/no-dynamic-require': 'off',
     'no-useless-escape': 'off',
+    'no-restricted-syntax': 'off',
   },
 };
