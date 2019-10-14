@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/Coobo/microservice-base/compare/v1.2.0...v1.3.0) (2019-10-14)
+
+
+### Features
+
+* container scoped and injected inside req ([9d8652e](https://github.com/Coobo/microservice-base/commit/9d8652e551dc9b198e66eb12830062dafd60293a))
+* exception handler middleware now leverages req.log to log error ([33f939a](https://github.com/Coobo/microservice-base/commit/33f939ae3fd3c6e3da67bbf495244e0bb7c7f655))
+
+
+### Bug Fixes
+
+* needed env files do run tests ([9b9023f](https://github.com/Coobo/microservice-base/commit/9b9023f542721ac403e92533087b586c95c1afb0))
+
 ## [1.2.0](https://github.com/Coobo/microservice-base/compare/v1.1.0...v1.2.0) (2019-10-14)
 
 
