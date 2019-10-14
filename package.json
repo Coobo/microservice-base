@@ -13,7 +13,7 @@
     "test": "jest --bail",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "release": "standard-version && yarn run build"
+    "release": "standard-version"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
@@ -59,6 +59,9 @@
       "doctoc README.md --title=## Table of contents",
       "git add"
     ]
+  },
+  "standard-version": {
+    "prerelease": "yarn run build"
   },
   "dependencies": {
     "awilix": "^4.2.2",
