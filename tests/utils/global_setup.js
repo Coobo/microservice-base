@@ -13,7 +13,7 @@ export default async () => {
   //     auth: false,
   //   },
   // });
-  // process.env.NODE_ENV = 'testing';
+  process.env.NODE_ENV = 'testing';
   // process.env.MONGO_URI = await mongod.getConnectionString();
   // process.env.MONGO_DBNAME = await mongod.getDbName();
   // process.env.MONGO_DBPATH = await mongod.getDbPath();
