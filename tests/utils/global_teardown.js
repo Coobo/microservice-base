@@ -1,3 +1,3 @@
 export default async () => {
-  // global.MONGOD.stop();
+  global.MONGOD.stop();
 };
