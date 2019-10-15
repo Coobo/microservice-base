@@ -1,6 +1,6 @@
 {
   "name": "@coobo/base",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Microservice Base Application",
   "main": "dist/index.js",
   "author": "VIMGAS <victormoraesgs@gmail.com>",

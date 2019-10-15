@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.2](https://github.com/Coobo/microservice-base/compare/v1.5.1...v1.5.2) (2019-10-15)
+
+
+### Bug Fixes
+
+* import placement ([03e3315](https://github.com/Coobo/microservice-base/commit/03e3315e10ca55707faab72f4a0d718979744ea4))
+
 ### [1.5.1](https://github.com/Coobo/microservice-base/compare/v1.5.0...v1.5.1) (2019-10-15)
 
 
