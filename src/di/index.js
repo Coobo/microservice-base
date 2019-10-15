@@ -6,9 +6,11 @@ const {
   aliasTo,
 } = require('awilix');
 
+const controller = require('../app/controller');
 const esmRequire = require('../utils/esmRequire');
 const esmResolver = require('../utils/esmResolver');
 const requireAll = require('../utils/requireAll');
+const middleware = require('../app/middleware');
 
 const _container = createContainer();
 
@@ -20,5 +22,7 @@ _container.register('asClass', asValue(asClass));
 _container.register('asValue', asValue(asValue));
 _container.register('asFunction', asValue(asFunction));
 _container.register('aliasTo', asValue(aliasTo));
+_container.register('controller', asFunction(controller));
+_container.register('middleware', asFunction(middleware));
 
 module.exports = _container;
