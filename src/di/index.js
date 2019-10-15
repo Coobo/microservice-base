@@ -1,6 +1,3 @@
-import controller from '../app/controller';
-import middleware from '../app/middleware';
-
 const {
   createContainer,
   asClass,
@@ -23,7 +20,5 @@ _container.register('asClass', asValue(asClass));
 _container.register('asValue', asValue(asValue));
 _container.register('asFunction', asValue(asFunction));
 _container.register('aliasTo', asValue(aliasTo));
-_container.register('controller', asFunction(controller));
-_container.register('middleware', asFunction(middleware));
 
 module.exports = _container;

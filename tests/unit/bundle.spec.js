@@ -14,8 +14,8 @@ const asFunction = Container.resolve('asFunction');
 const asValue = Container.resolve('asValue');
 
 Container.register('Application', asClass(app));
-Container.register('controller', asFunction(controllerLoader));
-Container.register('middleware', asFunction(middlewareLoader));
+Container.register('controller', asFunction(controllerLoader).singleton());
+Container.register('middleware', asFunction(middlewareLoader).singleton());
 Container.register('appRoot', {
   resolve: () => path.join(__dirname, '../../'),
 });

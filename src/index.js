@@ -1,4 +1,6 @@
 import Application from './app';
+import controller from './app/controller';
+import middleware from './app/middleware';
 import Config from './config';
 import Database from './db';
 import Container from './di';
@@ -23,6 +25,8 @@ Container.register({
   LoggerClass: asClass(LoggerClass).singleton(),
   LoggerMiddleware: asFunction(LoggerMiddleware).singleton(),
   Server: asClass(Server).singleton(),
+  controller: asFunction(controller).singleton(),
+  middleware: asFunction(middleware).singleton(),
 });
 
 module.exports = Container;
