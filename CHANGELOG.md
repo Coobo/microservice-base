@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/Coobo/microservice-base/compare/v1.4.0...v1.5.0) (2019-10-15)
+
+
+### Features
+
+* controller helper function ([4b981b4](https://github.com/Coobo/microservice-base/commit/4b981b4d9b7ec41d8debe7201048630c04dbdc6a))
+* middleware loader helper ([e0d0b6d](https://github.com/Coobo/microservice-base/commit/e0d0b6dd486d58f857ac16af49048ae08bac021e))
+
 ## [1.4.0](https://github.com/Coobo/microservice-base/compare/v1.3.0...v1.4.0) (2019-10-14)
 
 
