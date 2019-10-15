@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.1](https://github.com/Coobo/microservice-base/compare/v1.5.0...v1.5.1) (2019-10-15)
+
+
+### Bug Fixes
+
+* middleware and controller were not in container ([afcd542](https://github.com/Coobo/microservice-base/commit/afcd54270f49c0dce365ef2e0591724d8be79bbb))
+
 ## [1.5.0](https://github.com/Coobo/microservice-base/compare/v1.4.0...v1.5.0) (2019-10-15)
 
 
