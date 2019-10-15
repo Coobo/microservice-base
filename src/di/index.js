@@ -7,10 +7,10 @@ const {
 } = require('awilix');
 
 const controller = require('../app/controller');
+const middleware = require('../app/middleware');
 const esmRequire = require('../utils/esmRequire');
 const esmResolver = require('../utils/esmResolver');
 const requireAll = require('../utils/requireAll');
-const middleware = require('../app/middleware');
 
 const _container = createContainer();
 
