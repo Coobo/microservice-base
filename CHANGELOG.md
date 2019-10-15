@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.3](https://github.com/Coobo/microservice-base/compare/v1.5.2...v1.5.3) (2019-10-15)
+
+
+### Bug Fixes
+
+* controller and middleware cant be imported by require ([c157d84](https://github.com/Coobo/microservice-base/commit/c157d84aa27a23a02beb8dae6317064802667e1d))
+
 ### [1.5.2](https://github.com/Coobo/microservice-base/compare/v1.5.1...v1.5.2) (2019-10-15)
 
 
