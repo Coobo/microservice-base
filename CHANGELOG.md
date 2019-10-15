@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.4](https://github.com/Coobo/microservice-base/compare/v1.5.3...v1.5.4) (2019-10-15)
+
+
+### Bug Fixes
+
+* controller and middleware helpers now gets registered in index ([77c700e](https://github.com/Coobo/microservice-base/commit/77c700ee5c382ee36fe5e378ad30a5a927172b2f))
+
 ### [1.5.3](https://github.com/Coobo/microservice-base/compare/v1.5.2...v1.5.3) (2019-10-15)
 
 
