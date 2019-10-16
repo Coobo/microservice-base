@@ -9,6 +9,7 @@ import Factory from './factory';
 import Fake from './fake';
 import LoggerClass from './log';
 import LoggerMiddleware from './middlewares/logger';
+import ValidatorMiddleware from './middlewares/validator';
 import Server from './server';
 import Validator from './validator';
 
@@ -29,6 +30,7 @@ Container.register({
   middleware: asFunction(middleware).singleton(),
   Server: asClass(Server).singleton(),
   Validator: asValue(Validator),
+  ValidatorMiddleware: asValue(ValidatorMiddleware),
 });
 
 module.exports = Container;

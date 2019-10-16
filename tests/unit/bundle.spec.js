@@ -3,6 +3,7 @@ import path from 'path';
 import app from '../../src/app';
 import controllerLoader from '../../src/app/controller';
 import middlewareLoader from '../../src/app/middleware';
+import validatorLoader from '../../src/app/validate';
 import Container from '../../src/index';
 
 app.prototype.configPath = () => {
@@ -16,6 +17,7 @@ const asValue = Container.resolve('asValue');
 Container.register('Application', asClass(app));
 Container.register('controller', asFunction(controllerLoader).singleton());
 Container.register('middleware', asFunction(middlewareLoader).singleton());
+Container.register('validate', asFunction(validatorLoader).singleton());
 Container.register('appRoot', {
   resolve: () => path.join(__dirname, '../../'),
 });
@@ -91,6 +93,35 @@ describe('middleware helper function', () => {
     const middleware = Container.resolve('middleware');
 
     const fn = () => middleware('Company');
+    expect(fn).toThrow();
+  });
+});
+
+describe('validate helper function', () => {
+  const validate = Container.resolve('validate');
+  /** @type {import('@hapi/joi')} */
+  const schema = Container.resolve('Validator');
+  const UserValidator = schema.object().keys({
+    username: schema.string().required(),
+  });
+
+  Container.register('UserValidator', asValue(UserValidator));
+
+  it('should return a function', () => {
+    const fn = validate('body', UserValidator);
+
+    expect(typeof fn).toBe('function');
+  });
+
+  it('should work fine it provided with validator name', () => {
+    const fn = validate('body', 'UserValidator');
+
+    expect(typeof fn).toBe('function');
+  });
+
+  it('should fail if provided with invalid schema', () => {
+    const fn = () => validate('body', {});
+
     expect(fn).toThrow();
   });
 });
