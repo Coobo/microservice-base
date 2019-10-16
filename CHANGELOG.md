@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.3](https://github.com/Coobo/microservice-base/compare/v1.6.2...v1.6.3) (2019-10-16)
+
+
+### Bug Fixes
+
+* removing .js from validator name ([37578a9](https://github.com/Coobo/microservice-base/commit/37578a9bf1f023e532de6dd712569540765c1d07))
+
 ### [1.6.2](https://github.com/Coobo/microservice-base/compare/v1.6.1...v1.6.2) (2019-10-16)
 
 
