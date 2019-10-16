@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/Coobo/microservice-base/compare/v1.5.4...v1.6.0) (2019-10-16)
+
+
+### Features
+
+* validate function and validator middleware ([198e5cd](https://github.com/Coobo/microservice-base/commit/198e5cdfc41d516dfd8e781c5c6f47cf65583476))
+* validator using joi ([6a9cdf0](https://github.com/Coobo/microservice-base/commit/6a9cdf044c4d00b0d1e53b62a02952c23888640d))
+
+
+### Bug Fixes
+
+* putting validator contents inside proper file ([30934e1](https://github.com/Coobo/microservice-base/commit/30934e16d19c8745bd13b49507c772b90daa47ac))
+
 ### [1.5.4](https://github.com/Coobo/microservice-base/compare/v1.5.3...v1.5.4) (2019-10-15)
 
 
