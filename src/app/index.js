@@ -42,7 +42,7 @@ class Application {
   }
 
   validatorsTest() {
-    return /(.*)Validator\.js/i;
+    return /(.*)validators/i;
   }
 
   seedersTest() {
@@ -58,7 +58,8 @@ class Application {
       for (const file of files) {
         const filePath = path.join(domainPath, file);
         if (this.seedersTest().test(file)) this.registerSeeder(filePath);
-        if (this.validatorsTest().test(file)) this.registerValidator(filePath);
+        if (this.validatorsTest().test(file))
+          this.registerValidator(file, filePath);
         if (this.modelsTest().test(file)) this.registerModel(filePath);
         if (this.controllersTest().test(file))
           this.registerController(filePath);
@@ -68,49 +69,47 @@ class Application {
 
   registerController(filePath) {
     const module = this._require(filePath);
-    const parts =
-      filePath.indexOf('/') > -1 ? filePath.split('/') : filePath.split('\\');
-    parts.pop();
-    const nameUgly = parts.pop();
-    const name = `${nameUgly[0].toUpperCase()}${nameUgly
-      .substr(1)
-      .toLowerCase()}Controller`;
+    const name = `${this._getDomainName(filePath)}Controller`;
     this._container.register({ [name]: this._asClass(module).singleton() });
   }
 
   registerModel(filePath) {
     const module = this._require(filePath);
-    const parts =
-      filePath.indexOf('/') > -1 ? filePath.split('/') : filePath.split('\\');
-    parts.pop();
-    const nameUgly = parts.pop();
-    const name = `${nameUgly[0].toUpperCase()}${nameUgly
-      .substr(1)
-      .toLowerCase()}Model`;
+    const name = `${this._getDomainName(filePath)}Model`;
     this._container.register({ [name]: this._asFunction(module).singleton() });
   }
 
-  registerValidator(filePath) {
-    const module = this._require(filePath);
+  _capitalizeString(string) {
+    return `${string[0].toUpperCase()}${string.substr(1).toLowerCase()}`;
+  }
+
+  _getDomainName(filePath) {
     const parts =
       filePath.indexOf('/') > -1 ? filePath.split('/') : filePath.split('\\');
     parts.pop();
-    const nameUgly = parts.pop();
-    const name = `${nameUgly[0].toUpperCase()}${nameUgly
-      .substr(1)
-      .toLowerCase()}Validator`;
-    this._container.register({ [name]: this._asFunction(module).singleton() });
+    return this._capitalizeString(parts.pop());
+  }
+
+  registerValidator(file, filePath) {
+    const modules = fs.readdirSync(filePath);
+    const domainName = this._getDomainName(filePath);
+
+    modules.forEach(moduleName => {
+      const modulePath = path.join(filePath, moduleName);
+      const requiredModule = this._require(modulePath);
+      const name = `${domainName}${this._capitalizeString(
+        moduleName,
+      )}Validator`;
+
+      this._container.register({
+        [name]: this._asFunction(requiredModule).singleton(),
+      });
+    });
   }
 
   registerSeeder(filePath) {
     const module = this._require(filePath);
-    const parts =
-      filePath.indexOf('/') > -1 ? filePath.split('/') : filePath.split('\\');
-    parts.pop();
-    const nameUgly = parts.pop();
-    const name = `${nameUgly[0].toUpperCase()}${nameUgly
-      .substr(1)
-      .toLowerCase()}Seeder`;
+    const name = `${this._getDomainName(filePath)}Seeder`;
     this._container.register({ [name]: this._asFunction(module).singleton() });
   }
 }
