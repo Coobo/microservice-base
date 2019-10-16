@@ -7,6 +7,7 @@ class Application {
     this._require = esmRequire;
     this._asClass = asClass;
     this._asFunction = asFunction;
+    this.inTest = process.env.NODE_ENV === 'testing';
     this.inProduction = process.env.NODE_ENV === 'production';
     this.inDev = !this.inProduction;
 
@@ -22,15 +23,21 @@ class Application {
   }
 
   configPath() {
-    return path.join(this.appRoot, 'src/config');
+    return this.inDev || this.inTest
+      ? path.join(this.appRoot, 'src/config')
+      : path.join(this.appRoot, 'dist/config');
   }
 
   servicesPath() {
-    return path.join(this.appRoot, 'src/services');
+    return this.inDev || this.inTest
+      ? path.join(this.appRoot, 'src/services')
+      : path.join(this.appRoot, 'dist/services');
   }
 
   domainsPath() {
-    return path.join(this.appRoot, 'src/domains');
+    return this.inDev || this.inTest
+      ? path.join(this.appRoot, 'src/domains')
+      : path.join(this.appRoot, 'dist/domains');
   }
 
   controllersTest() {
