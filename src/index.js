@@ -1,6 +1,7 @@
 import Application from './app';
 import controller from './app/controller';
 import middleware from './app/middleware';
+import validate from './app/validate';
 import Config from './config';
 import Database from './db';
 import Container from './di';
@@ -29,6 +30,7 @@ Container.register({
   LoggerClass: asClass(LoggerClass).singleton(),
   middleware: asFunction(middleware).singleton(),
   Server: asClass(Server).singleton(),
+  validate: asFunction(validate).singleton(),
   Validator: asValue(Validator),
   ValidatorMiddleware: asValue(ValidatorMiddleware),
 });
