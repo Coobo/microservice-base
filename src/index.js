@@ -27,6 +27,7 @@ Container.register({
   Server: asClass(Server).singleton(),
   controller: asFunction(controller).singleton(),
   middleware: asFunction(middleware).singleton(),
+  Validator: asValue(Validator),
 });
 
 module.exports = Container;
