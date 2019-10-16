@@ -1,5 +1,5 @@
 import fake from '../../src/fake';
-import Joi from '../../src/validator/joi';
+import Joi from '../../src/validator';
 
 describe('Extended Joi (from @hapi/joi)', () => {
   describe('cpf extension', () => {
