@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.2](https://github.com/Coobo/microservice-base/compare/v1.6.1...v1.6.2) (2019-10-16)
+
+
+### Bug Fixes
+
+* validators are properly loaded ([a742dce](https://github.com/Coobo/microservice-base/commit/a742dce6b6895513c18d0a7482afae4992b503f9))
+
 ### [1.6.1](https://github.com/Coobo/microservice-base/compare/v1.6.0...v1.6.1) (2019-10-16)
 
 
