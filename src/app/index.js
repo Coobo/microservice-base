@@ -98,7 +98,7 @@ class Application {
       const modulePath = path.join(filePath, moduleName);
       const requiredModule = this._require(modulePath);
       const name = `${domainName}${this._capitalizeString(
-        moduleName,
+        moduleName.split('.').shift(),
       )}Validator`;
 
       this._container.register({
