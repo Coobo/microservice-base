@@ -10,6 +10,7 @@ import Fake from './fake';
 import LoggerClass from './log';
 import LoggerMiddleware from './middlewares/logger';
 import Server from './server';
+import Validator from './validator';
 
 const asClass = Container.resolve('asClass');
 const asFunction = Container.resolve('asFunction');
@@ -17,16 +18,16 @@ const asValue = Container.resolve('asValue');
 
 Container.register({
   Application: asClass(Application).singleton(),
-  Env: asClass(Env).singleton(),
   Config: asClass(Config).singleton(),
+  controller: asFunction(controller).singleton(),
   Database: asFunction(Database).singleton(),
+  Env: asClass(Env).singleton(),
   Factory: asClass(Factory).singleton(),
   fake: asValue(Fake),
-  LoggerClass: asClass(LoggerClass).singleton(),
   LoggerMiddleware: asFunction(LoggerMiddleware).singleton(),
-  Server: asClass(Server).singleton(),
-  controller: asFunction(controller).singleton(),
+  LoggerClass: asClass(LoggerClass).singleton(),
   middleware: asFunction(middleware).singleton(),
+  Server: asClass(Server).singleton(),
   Validator: asValue(Validator),
 });
 
