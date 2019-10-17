@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.5](https://github.com/Coobo/microservice-base/compare/v1.6.4...v1.6.5) (2019-10-17)
+
+
+### Bug Fixes
+
+* application does not require container to be injected anymore ([1a18586](https://github.com/Coobo/microservice-base/commit/1a185868d593543be0329622e7b22ac923ed57d2))
+* logger is not auto-registered from logger class anymore ([2030dfb](https://github.com/Coobo/microservice-base/commit/2030dfba7ac3f6c06dcd3ba48d28659f9ad9e687))
+* removed class suffix from logger registrations ([fbf321b](https://github.com/Coobo/microservice-base/commit/fbf321bbf8020e9a7593b9779aeb59542ce5e0b2))
+* removed reference of this from logger factory ([4d0b966](https://github.com/Coobo/microservice-base/commit/4d0b96654b5e7c397c9f3190c192462ec3111fce))
+
 ### [1.6.4](https://github.com/Coobo/microservice-base/compare/v1.6.3...v1.6.4) (2019-10-16)
 
 
