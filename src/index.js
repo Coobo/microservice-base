@@ -8,8 +8,8 @@ import Container from './di';
 import Env from './env';
 import Factory from './factory';
 import Fake from './fake';
-import LoggerClass from './log';
-import LoggerMiddleware from './middlewares/logger';
+import Logger from './log';
+import APILogger from './log/api';
 import ValidatorMiddleware from './middlewares/validator';
 import Server from './server';
 import Validator from './validator';
@@ -26,8 +26,8 @@ Container.register({
   Env: asClass(Env).singleton(),
   Factory: asClass(Factory).singleton(),
   fake: asValue(Fake),
-  LoggerMiddleware: asFunction(LoggerMiddleware).singleton(),
-  LoggerClass: asClass(LoggerClass).singleton(),
+  LoggerClass: asFunction(Logger).singleton(),
+  APILoggerClass: asFunction(APILogger).singleton(),
   middleware: asFunction(middleware).singleton(),
   Server: asClass(Server).singleton(),
   validate: asFunction(validate).singleton(),

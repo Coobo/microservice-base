@@ -3,7 +3,7 @@ import path from 'path';
 import config from '../../src/config';
 import container from '../../src/di';
 import Logger from '../../src/log';
-import LoggerMiddleware from '../../src/middlewares/logger';
+import APILogger from '../../src/log/api';
 
 const asClass = container.resolve('asClass');
 const asFunction = container.resolve('asFunction');
@@ -17,7 +17,7 @@ container.register({
   ),
   Config: asClass(config),
   LoggerClass: asClass(Logger).singleton(),
-  LoggerMiddleware: asFunction(LoggerMiddleware).singleton(),
+  APILogger: asFunction(APILogger).singleton(),
 });
 
 let Config;

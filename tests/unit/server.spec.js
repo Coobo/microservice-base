@@ -5,7 +5,7 @@ import config from '../../src/config';
 import container from '../../src/di';
 import env from '../../src/env';
 import Logger from '../../src/log';
-import LoggerMiddleware from '../../src/middlewares/logger';
+import APILogger from '../../src/log/api';
 import server from '../../src/server';
 
 const asClass = container.resolve('asClass');
@@ -24,7 +24,7 @@ container.register({
   Config: asClass(config).singleton(),
   Server: asClass(server).singleton(),
   LoggerClass: asClass(Logger).singleton(),
-  LoggerMiddleware: asFunction(LoggerMiddleware).singleton(),
+  APILogger: asFunction(APILogger).singleton(),
 });
 
 let Server;
