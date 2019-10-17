@@ -16,7 +16,7 @@ container.register({
     },
   ),
   Config: asClass(config),
-  LoggerClass: asClass(Logger).singleton(),
+  Logger: asClass(Logger).singleton(),
   APILogger: asFunction(APILogger).singleton(),
 });
 

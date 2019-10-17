@@ -23,7 +23,7 @@ container.register({
   Env: asClass(env).singleton(),
   Config: asClass(config).singleton(),
   Server: asClass(server).singleton(),
-  LoggerClass: asClass(Logger).singleton(),
+  Logger: asFunction(Logger).singleton(),
   APILogger: asFunction(APILogger).singleton(),
 });
 
