@@ -6,7 +6,7 @@ function Logger({ Env, Config }) {
   if (Env.get('NODE_ENV') === 'development') level = 'trace';
 
   Config.defaults('log', {
-    pretty: this._env.get('NODE_ENV') === 'development',
+    pretty: Env.get('NODE_ENV') === 'development',
     api: true,
     safeWords: ['password', 'key'],
     level,
