@@ -42,7 +42,9 @@ describe('@coobo/base bundle', () => {
 });
 
 describe('controller helper function', () => {
-  class UserController {}
+  class UserController {
+    store() {}
+  }
 
   it('should load a injected controller', () => {
     Container.register('UserController', asClass(UserController));
@@ -53,17 +55,33 @@ describe('controller helper function', () => {
   });
 
   it('should autocomplete the controller name with "Controller" suffix', () => {
-    Container.register('User', asClass(UserController));
+    Container.register('UserController', asClass(UserController));
     const controller = Container.resolve('controller');
 
     const uc = controller('User');
     expect(uc instanceof UserController).toBe(true);
   });
 
+  it('should load a injected controller.method', () => {
+    Container.register('UserController', asClass(UserController));
+    const controller = Container.resolve('controller');
+
+    const um = controller('User.store');
+    expect(typeof um).toBe('function');
+  });
+
   it('should fail when the controller does not exist', () => {
     const controller = Container.resolve('controller');
 
     const fn = () => controller('Company');
+    expect(fn).toThrow();
+  });
+
+  it('should fail when the controller exists but the requested method does not exist', () => {
+    Container.register('UserController', asClass(UserController));
+    const controller = Container.resolve('controller');
+
+    const fn = () => controller('User.index');
     expect(fn).toThrow();
   });
 });
