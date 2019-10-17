@@ -119,25 +119,43 @@ describe('validate helper function', () => {
   const validate = Container.resolve('validate');
   /** @type {import('@hapi/joi')} */
   const schema = Container.resolve('Validator');
-  const UserValidator = schema.object().keys({
+  const UserStoreValidator = schema.object().keys({
     username: schema.string().required(),
   });
 
-  Container.register('UserValidator', asValue(UserValidator));
+  Container.register('UserStoreValidator', asValue(UserStoreValidator));
 
   it('should return a function', () => {
-    const fn = validate('body', UserValidator);
+    const fn = validate('body', UserStoreValidator);
 
     expect(typeof fn).toBe('function');
   });
 
   it('should work fine it provided with validator name', () => {
-    const fn = validate('body', 'UserValidator');
+    const fn = validate('body', 'UserStoreValidator');
+
+    expect(typeof fn).toBe('function');
+  });
+
+  it('should work fine it provided with minified validator name (without Validator)', () => {
+    const fn = validate('body', 'UserStore');
+
+    expect(typeof fn).toBe('function');
+  });
+
+  it('should work fine it provided with Domain.validatorname', () => {
+    const fn = validate('body', 'User.store');
 
     expect(typeof fn).toBe('function');
   });
 
   it('should fail if provided with invalid schema', () => {
+    const fn = () => validate('body', {});
+
+    expect(fn).toThrow();
+  });
+
+  it('should fail if provided with invalid method', () => {
     const fn = () => validate('body', {});
 
     expect(fn).toThrow();
