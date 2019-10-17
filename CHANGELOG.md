@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/Coobo/microservice-base/compare/v1.6.5...v1.7.0) (2019-10-17)
+
+
+### Features
+
+* add dot notation support to validate function ([55733e0](https://github.com/Coobo/microservice-base/commit/55733e0455cab6b53e03a354d800d8c8ddd519ec))
+* add dot syntax support for method accessibility on controller func ([b396444](https://github.com/Coobo/microservice-base/commit/b396444d01fd5eceba64cba219da9089906e8793))
+
 ### [1.6.5](https://github.com/Coobo/microservice-base/compare/v1.6.4...v1.6.5) (2019-10-17)
 
 
