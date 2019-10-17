@@ -1,12 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import { asClass, asFunction } from 'awilix';
+import fs from 'fs';
+import path from 'path';
 
 class Application {
-  constructor({ appRoot, Container, esmRequire, asClass, asFunction }) {
-    this._container = Container;
+  constructor({ appRoot, esmRequire }) {
     this._require = esmRequire;
-    this._asClass = asClass;
-    this._asFunction = asFunction;
     this.inTest = process.env.NODE_ENV === 'testing';
     this.inProduction = process.env.NODE_ENV === 'production';
     this.inDev = !this.inProduction;
@@ -56,7 +54,8 @@ class Application {
     return /(.*)Seeder\.js/i;
   }
 
-  loadControllers() {
+  registerDomains(container) {
+    this._container = container;
     const domainsPath = this.domainsPath();
     const domains = fs.readdirSync(domainsPath);
     for (const domain of domains) {
@@ -77,13 +76,13 @@ class Application {
   registerController(filePath) {
     const module = this._require(filePath);
     const name = `${this._getDomainName(filePath)}Controller`;
-    this._container.register({ [name]: this._asClass(module).singleton() });
+    this._container.register({ [name]: asClass(module).singleton() });
   }
 
   registerModel(filePath) {
     const module = this._require(filePath);
     const name = `${this._getDomainName(filePath)}Model`;
-    this._container.register({ [name]: this._asFunction(module).singleton() });
+    this._container.register({ [name]: asFunction(module).singleton() });
   }
 
   _capitalizeString(string) {
@@ -109,7 +108,7 @@ class Application {
       )}Validator`;
 
       this._container.register({
-        [name]: this._asFunction(requiredModule).singleton(),
+        [name]: asFunction(requiredModule).singleton(),
       });
     });
   }
@@ -117,7 +116,7 @@ class Application {
   registerSeeder(filePath) {
     const module = this._require(filePath);
     const name = `${this._getDomainName(filePath)}Seeder`;
-    this._container.register({ [name]: this._asFunction(module).singleton() });
+    this._container.register({ [name]: asFunction(module).singleton() });
   }
 }
 
