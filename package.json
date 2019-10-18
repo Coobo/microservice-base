@@ -13,6 +13,7 @@
     "test": "jest --bail",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:related": "jest --findRelatedTests",
     "prerelease": "yarn run build",
     "release": "standard-version"
   },
@@ -37,29 +38,6 @@
     "sucrase": "^3.10.1",
     "supertest": "^4.0.2"
   },
-  "husky": {
-    "hooks": {
-      "precommit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.js": [
-      "eslint --fix",
-      "prettier --write",
-      "yarn test",
-      "git add"
-    ],
-    "tests/**/*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "README.md": [
-      "doctoc README.md --title=## Table of contents",
-      "git add"
-    ]
-  },
   "dependencies": {
     "@hapi/joi": "^16.1.7",
     "awilix": "^4.2.2",
@@ -80,5 +58,29 @@
     "pino-pretty": "^3.2.2",
     "uuid": "^3.3.3",
     "youch": "^2.0.10"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "yarn test:related",
+      "git add"
+    ],
+    "tests/**/*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "yarn test:related",
+      "git add"
+    ],
+    "README.md": [
+      "doctoc README.md --title=## Table of contents",
+      "git add"
+    ]
   }
 }
