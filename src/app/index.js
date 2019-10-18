@@ -54,6 +54,17 @@ class Application {
     return /(.*)Seeder\.js/i;
   }
 
+  _capitalizeString(string) {
+    return `${string[0].toUpperCase()}${string.substr(1).toLowerCase()}`;
+  }
+
+  _getDomainName(filePath) {
+    const parts =
+      filePath.indexOf('/') > -1 ? filePath.split('/') : filePath.split('\\');
+    parts.pop();
+    return this._capitalizeString(parts.pop());
+  }
+
   registerDomains(container) {
     this._container = container;
     const domainsPath = this.domainsPath();
@@ -83,17 +94,6 @@ class Application {
     const module = this._require(filePath);
     const name = `${this._getDomainName(filePath)}Model`;
     this._container.register({ [name]: asFunction(module).singleton() });
-  }
-
-  _capitalizeString(string) {
-    return `${string[0].toUpperCase()}${string.substr(1).toLowerCase()}`;
-  }
-
-  _getDomainName(filePath) {
-    const parts =
-      filePath.indexOf('/') > -1 ? filePath.split('/') : filePath.split('\\');
-    parts.pop();
-    return this._capitalizeString(parts.pop());
   }
 
   registerValidator(file, filePath) {
