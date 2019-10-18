@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/Coobo/microservice-base/compare/v1.7.0...v1.8.0) (2019-10-18)
+
+
+### Features
+
+* one domain can now have multiple controllers ([9709711](https://github.com/Coobo/microservice-base/commit/9709711bae024f2ae39b9be756ba56a36b5d178a))
+
+
+### Bug Fixes
+
+* pre-commit hook fixed ([1006fcb](https://github.com/Coobo/microservice-base/commit/1006fcb85543df29059f13214880f194cef4ee84))
+
 ## [1.7.0](https://github.com/Coobo/microservice-base/compare/v1.6.5...v1.7.0) (2019-10-17)
 
 
