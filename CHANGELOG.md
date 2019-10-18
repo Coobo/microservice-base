@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.8.1](https://github.com/Coobo/microservice-base/compare/v1.8.0...v1.8.1) (2019-10-18)
+
+
+### Bug Fixes
+
+* _capitalizestring method does not lowercase the rest of the word ([841e6cb](https://github.com/Coobo/microservice-base/commit/841e6cb51e9268746fbbd40bb99e15b9b7f0dc70))
+* domain name now is properly passed to registercontrollers ([d569e67](https://github.com/Coobo/microservice-base/commit/d569e67cc13e0f39b470b6adacb8a7088d086afe))
+
 ## [1.8.0](https://github.com/Coobo/microservice-base/compare/v1.7.0...v1.8.0) (2019-10-18)
 
 
