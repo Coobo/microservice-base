@@ -113,7 +113,7 @@ class Application {
         moduleFileName === lowerCaseDomainName;
 
       const module = this._require(newFilePath);
-      const name = `${this._capitalizeString(filePath)}${
+      const name = `${this._getDomainName(filePath)}${
         isModuleNameTheSameAsDomainName
           ? ''
           : this._capitalizeString(moduleFileName)
