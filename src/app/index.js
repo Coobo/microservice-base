@@ -38,8 +38,12 @@ class Application {
       : path.join(this.appRoot, 'dist/domains');
   }
 
-  controllersTest() {
+  controllerTest() {
     return /(.*)Controller\.js/i;
+  }
+
+  controllersTest() {
+    return /(.*)controllers/i;
   }
 
   modelsTest() {
@@ -74,12 +78,21 @@ class Application {
       const files = fs.readdirSync(domainPath);
       for (const file of files) {
         const filePath = path.join(domainPath, file);
-        if (this.seedersTest().test(file)) this.registerSeeder(filePath);
-        if (this.validatorsTest().test(file))
+        if (this.seedersTest().test(file)) {
+          this.registerSeeder(filePath);
+        }
+        if (this.validatorsTest().test(file)) {
           this.registerValidator(file, filePath);
-        if (this.modelsTest().test(file)) this.registerModel(filePath);
-        if (this.controllersTest().test(file))
+        }
+        if (this.modelsTest().test(file)) {
+          this.registerModel(filePath);
+        }
+        if (this.controllerTest().test(file)) {
           this.registerController(filePath);
+        }
+        if (this.controllersTest().test(file)) {
+          this.registerControllers(filePath);
+        }
       }
     }
   }
@@ -88,6 +101,25 @@ class Application {
     const module = this._require(filePath);
     const name = `${this._getDomainName(filePath)}Controller`;
     this._container.register({ [name]: asClass(module).singleton() });
+  }
+
+  registerControllers(filePath) {
+    const lowerCaseDomainName = this._getDomainName(filePath).toLowerCase();
+
+    for (const moduleFile of fs.readdirSync(filePath)) {
+      const moduleFileName = moduleFile.split('.')[0];
+      const newFilePath = path.join(filePath, moduleFile);
+      const isModuleNameTheSameAsDomainName =
+        moduleFileName === lowerCaseDomainName;
+
+      const module = this._require(newFilePath);
+      const name = `${this._capitalizeString(filePath)}${
+        isModuleNameTheSameAsDomainName
+          ? ''
+          : this._capitalizeString(moduleFileName)
+      }Controller`;
+      this._container.register({ [name]: asClass(module).singleton() });
+    }
   }
 
   registerModel(filePath) {
