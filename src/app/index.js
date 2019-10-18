@@ -59,7 +59,7 @@ class Application {
   }
 
   _capitalizeString(string) {
-    return `${string[0].toUpperCase()}${string.substr(1).toLowerCase()}`;
+    return `${string[0].toUpperCase()}${string.substr(1)}`;
   }
 
   _getDomainName(filePath) {
