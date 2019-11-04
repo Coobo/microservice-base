@@ -15,7 +15,7 @@
     "test:coverage": "jest --coverage",
     "test:related": "jest --findRelatedTests",
     "prerelease": "yarn run build",
-    "release": "standard-version"
+    "release": "standard-version --infile \"docs/CHANGELOG.md\""
   },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
