@@ -8,6 +8,7 @@ import factory from './factory';
 import fake from './fake';
 import logger from './logger';
 import validatorMiddleware from './middlewares/validator';
+import queue from './queue';
 import server from './server';
 import capitalizeString from './utils/capitalize-string';
 import dbUri from './utils/db-uri';
@@ -36,4 +37,5 @@ export default {
   requireAll,
   validator,
   validatorMiddleware,
+  queue,
 };
