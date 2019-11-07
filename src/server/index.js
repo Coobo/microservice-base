@@ -105,7 +105,7 @@ const Server = {
    * @method use
    * @public
    *
-   * @param {function[]} middlewares
+   * @param {import('express').RequestHandler[]} middlewares
    *
    * @returns {void}
    */

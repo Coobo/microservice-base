@@ -61,7 +61,7 @@
     "uuid": "^3.3.3",
     "youch": "^2.0.10"
   },
-  "types": "types.d.ts",
+  "types": "index.d.ts",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
