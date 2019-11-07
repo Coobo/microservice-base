@@ -1,8 +1,15 @@
 import { Application, RequestHandler, Router } from 'express';
-import { Connection, ConnectionOptions, Model, Mongoose } from 'mongoose';
+import {
+  Connection,
+  ConnectionOptions,
+  Model,
+  Mongoose,
+  Document,
+} from 'mongoose';
 import { Logger } from 'pino';
 import Bull from 'bull';
 import { Root } from '@hapi/joi';
+import { Chance } from 'chance';
 
 export as namespace Base;
 
@@ -19,6 +26,10 @@ export function dbUri(
   user?: string,
   password?: string,
 ): string;
+
+export const logger: Logger;
+
+export const fake: typeof Chance;
 
 export namespace env {
   /** The path to .env file */
@@ -169,8 +180,6 @@ export namespace db {
   export function load(modelPath: string, name?: string): void;
 }
 
-export const logger: Logger;
-
 export namespace queue {
   export interface Queue {
     key: string;
@@ -215,4 +224,65 @@ export namespace app {
 
   export function path(...paths: string[]): string;
   export function load(): void;
+}
+
+export namespace factory {
+  function bluePrintCallback(
+    fake: typeof Chance,
+    index: number,
+    data: object,
+  ): object;
+
+  interface Blueprint {
+    name: string;
+    callback: typeof bluePrintCallback;
+  }
+
+  interface BlueprintInterface {
+    new (
+      dataCallback: typeof bluePrintCallback,
+      fake: typeof Chance,
+    ): BlueprintInterface;
+    dataCallback: typeof bluePrintCallback;
+    fake: typeof Chance;
+
+    makeOne(index: number, data: object): Promise<object>;
+  }
+
+  interface BlueprintModel extends BlueprintInterface {
+    new (
+      blueprint: Blueprint,
+      fake: typeof Chance,
+      db: typeof db,
+    ): BlueprintModel;
+    Model: string;
+    db: typeof db;
+
+    getModel(): typeof Model;
+    instantiateModel(attributes: object): typeof Document.prototype;
+    make(data?: object, index?: number): Promise<typeof Document.prototype>;
+    makeMany(
+      instances: number,
+      data?: object,
+    ): Promise<typeof Document.prototype[]>;
+    create(data?: object, index?: number): Promise<typeof Document.prototype>;
+    createMany(
+      instances: number,
+      data?: object,
+    ): Promise<typeof Document.prototype[]>;
+    reset(): Promise<any>;
+  }
+
+  export const blueprints: Blueprint[];
+  export const db: typeof db;
+  export const fake: typeof Chance;
+
+  export function getNameString(nameOrModel: typeof Model | string): string;
+  export function blueprint(
+    nameOrModel: typeof Model | string,
+    callback: typeof bluePrintCallback,
+  ): typeof factory;
+  export function getBlueprint(nameOrModel: typeof Model | string): Blueprint;
+  export function model(nameOrModel: typeof Model | string): BlueprintModel;
+  export function clear(): void;
 }
