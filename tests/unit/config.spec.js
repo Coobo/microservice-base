@@ -24,7 +24,11 @@ describe('config', () => {
   });
 
   it('should have autoloaded config-path', () => {
-    expect(config.get('app')).toStrictEqual({ config: 'test', oneTest: true });
+    expect(config.get('app')).toStrictEqual({
+      config: 'test',
+      name: 'test-app',
+      oneTest: true,
+    });
     expect(config.get('app.config')).toBe('test');
     expect(config.get('app.oneTest')).toBe(true);
   });
