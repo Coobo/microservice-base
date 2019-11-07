@@ -1,9 +1,9 @@
-const Chance = require('chance');
+import Chance from 'chance';
 
 const chance = Chance();
 
 chance.mixin({
-  cnpj(punctuation = true) {
+  cnpj(punctuation = false) {
     function mod(dividendo, divisor) {
       return Math.round(dividendo - Math.floor(dividendo / divisor) * divisor);
     }
@@ -58,4 +58,4 @@ chance.mixin({
 });
 
 /** @type {Chance.Chance} */
-module.exports = chance;
+export default chance;

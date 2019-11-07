@@ -1,82 +1,127 @@
-const dotenv = require('dotenv');
-const { readFileSync } = require('fs');
-const { isAbsolute, join } = require('path');
+import dotenv from 'dotenv';
+import { readFileSync, existsSync } from 'fs';
 
-/**
- * @class Env
- * @group Config
- *
- * @constructor
- * @singleton
- */
-class Env {
+import { pathTo } from '../utils/root';
+
+const Env = {
+  _envPath: pathTo('.env'),
+  _testEnvPath: pathTo('.env.test'),
   /**
-   * @param {object} DependencyInjector
-   * @param {string} DependencyInjector.appRoot
-   */
-  constructor({ appRoot }) {
-    const { envContents, testEnvContents } = this._envFileLoader(appRoot);
-    this.process(envContents, false);
-    this.process(testEnvContents, true);
-  }
-
-  /**
-   * @method _loadFile
-   * @private
+   * Get value for a key from the process.env. Since `process.env` object stores all
+   * values as strings, this method will cast them to their counterpart datatypes.
    *
-   * @param {string} filePath
-   * @param {boolean} [optional=false]
+   * | Value | Casted value |
+   * |------|---------------|
+   * | 'true' | true |
+   * | '1' | true |
+   * | 'on' | true |
+   * | 'false' | false |
+   * | '0' | false |
+   * | 'off' | false |
+   * | 'null' | null |
    *
-   * @returns {string}
+   * Everything else is returned as a string.
+   *
+   * A default value can also be defined which is returned when original value
+   * is undefined.
+   *
+   * @method get
+   *
+   * @param {string} key
+   * @param {string|boolean|null|undefined} [defaultValue]
+   *
+   * @returns {any}
+   *
+   * @example
+   * ```ts
+   * Env.get('PORT', 3333)
+   * ```
    */
-  _loadFile(filePath, optional = false) {
-    try {
-      return readFileSync(filePath, 'utf-8');
-    } catch (error) {
-      if (error.code !== 'ENOENT') {
-        throw error;
-      }
+  get(key, defaultValue = null) {
+    const value = process.env[key];
 
-      if (!optional) {
-        const e = new Error(`The ${filePath} file is missing`);
-        e.name = 'MISSING_ENV_FILE';
-        throw e;
-      }
+    if (value === undefined) {
+      return defaultValue;
     }
 
-    return '';
-  }
+    return this._castValue(value);
+  },
 
   /**
-   * @method _envFileLoader
-   * @private
+   * The method is similar to it's counter part [[get]] method. However, it will
+   * raise exception when the original value is non-existing.
    *
-   * @param {string} appRoot
+   * `undefined`, `null` and `empty strings` are considered as non-exisitng values.
    *
-   * @returns {EnvContents}
+   * We recommended using this method for **environment variables** that are strongly
+   * required to run the application stably.
+   *
+   * @method getOrFail
+   *
+   * @param {string} key
+   * @param {any} [defaultValue=null]
+   *
+   * @returns {string|boolean}
+   *
+   * @example
+   * ```ts
+   * Env.getOrFail('PORT', 3333)
+   * ```
    */
-  _envFileLoader(appRoot) {
-    const envPath = process.env.ENV_PATH || '.env';
-    const absPath = isAbsolute(envPath) ? envPath : join(appRoot, envPath);
+  getOrFail(key, defaultValue) {
+    const value = this.get(key, defaultValue);
 
-    const envContents = this._loadFile(
-      absPath,
-      process.env.ENV_SILENT === 'true',
-    );
-
-    let testEnvContents = '';
-    if (process.env.NODE_ENV === 'testing') {
-      testEnvContents = this._loadFile(join(appRoot, '.env.testing'), true);
+    if (!value && value !== false) {
+      const e = new Error(`Make sure to define environment variable ${key}`);
+      e.name = 'MISSING_ENV_KEY';
+      throw e;
     }
 
-    return { testEnvContents, envContents };
-  }
+    return value;
+  },
+
+  /**
+   * Update or set value for a given property
+   * inside `process.env`.
+   *
+   * @method set
+   *
+   * @param {string} key
+   * @param {any} value
+   *
+   * @returns {void}
+   *
+   * @example
+   * ```ts
+   * Env.set('PORT', 3333)
+   * ```
+   */
+  set(key, value) {
+    process.env[key] = this._interpolate(value, {});
+  },
+
+  /**
+   * Process a string with .env definitions.
+   *
+   * @param {string} envContents
+   * @param {boolean} [overwrite=false]
+   *
+   * @returns {void}
+   */
+  process(envContents, overwrite = false) {
+    const envCollection = dotenv.parse(envContents.trim());
+
+    Object.keys(envCollection).forEach(key => {
+      if (process.env[key] === undefined || overwrite) {
+        process.env[key] = this._interpolate(envCollection[key], envCollection);
+      }
+    });
+  },
 
   /**
    * Casts the string value to their native data type.
    *
    * @method _castValue
-   * @private
    *
    * @param {string} value
    *
@@ -97,102 +142,10 @@ class Env {
       default:
         return value;
     }
-  }
+  },
 
   /**
-   * Returns a value for a given key from the environment variable or the
-   * current parsed object.
-   *
-   * @method _getValue
-   * @private
-   *
-   * @param {string} key
-   * @param {object} parsed
-   *
-   * @returns {string}
-   */
-  _getValue(key, parsed) {
-    if (process.env[key]) return process.env[key];
-
-    if (parsed[key]) return this._interpolate(parsed[key], parsed);
-
-    return '';
-  }
-
-  /**
-   * Interpolating the token wrapped inside the mustache
-   * braces.
-   *
-   * @method _interpolateMustache
-   * @private
-   *
-   * @param {string} token
-   * @param {object} parsed
-   *
-   * @returns {string}
-   */
-  _interpolateMustache(token, parsed) {
-    /**
-     * Finding the closing brace. If closing brace is missing, we
-     * consider the block as a normal string
-     */
-    const closingBrace = token.indexOf('}');
-    if (closingBrace === -1) {
-      return token;
-    }
-
-    /**
-     * Then we pull everything until the closing brace, except
-     * the opening brace and trim off all white spaces.
-     */
-    const varReference = token.slice(1, closingBrace).trim();
-
-    /**
-     * Getting the value of the reference inside the braces
-     */
-    return `${this._getValue(varReference, parsed)}${token.slice(
-      closingBrace + 1,
-    )}`;
-  }
-
-  /**
-   * Interpolating the escaped sequence.
-   *
-   * @method _interpolateEscapedSequence
-   * @private
-   *
-   * @param {string} value
-   *
-   * @returns {string}
-   */
-  _interpolateEscapedSequence(value) {
-    return `$${value}`;
-  }
-
-  /**
-   * Interpolating the variable reference starting with a
-   * `$`. We only capture numbers,letter and underscore.
-   * For other characters, one can use the mustache
-   * braces.
-   *
-   * @method _interpolateVariable
-   * @private
-   *
-   * @param {string} token
-   * @param {object} parsed
-   *
-   * @returns {string}
-   */
-  _interpolateVariable(token, parsed) {
-    return token.replace(/[a-zA-Z0-9_]+/, key => {
-      return this._getValue(key, parsed);
-    });
-  }
-
-  /**
-   * Interpolates the referenced values
-   *
-   * @method _interpolate
+   * Interpolates the referenced values.
    * @private
    *
    * @param {string} value
@@ -223,153 +176,116 @@ class Env {
     }
 
     return newValue;
-  }
+  },
 
   /**
-   * Processes environment variables by parsing a string
-   * in `dotfile` syntax.
+   * Interpolating the escaped sequence.
+   * @private
    *
-   * @method process
-   * @public
+   * @param {string} value
    *
-   * @param {string} envString
-   * @param {boolean} [overwrite=false]
-   *
-   * @returns {void}
-   *
-   * @example
-   * ```ts
-   * Env.process(`
-   *  PORT=3000
-   *  HOST=127.0.0.1
-   * `)
-   * ```
-   *
-   * and then access it as follows
-   *
-   * ```ts
-   * Env.get('PORT')
-   *
-   * // or
-   * process.env.PORT
-   * ```
+   * @returns {string}
    */
-  process(envString, overwrite = false) {
-    const envCollection = dotenv.parse(envString.trim());
+  _interpolateEscapedSequence(value) {
+    return `$${value}`;
+  },
+
+  /**
+   * Interpolating the variable reference starting with a
+   * `$`. We only capture numbers,letter and underscore.
+   * For other characters, one can use the mustache
+   * braces.
+   *
+   * @method _interpolateVariable
+   *
+   * @param {string} token
+   * @param {object} parsed
+   *
+   * @returns {string}
+   */
+  _interpolateVariable(token, parsed) {
+    return token.replace(/[a-zA-Z0-9_]+/, key => {
+      return this._getValue(key, parsed);
+    });
+  },
+
+  /**
+   * Interpolating the token wrapped inside the mustache
+   * braces.
+   *
+   * @method _interpolateMustache
+   *
+   * @param {string} token
+   * @param {object} parsed
+   *
+   * @returns {string}
+   */
+  _interpolateMustache(token, parsed) {
+    /**
+     * Finding the closing brace. If closing brace is missing, we
+     * consider the block as a normal string
+     */
+    const closingBrace = token.indexOf('}');
+    if (closingBrace === -1) {
+      return token;
+    }
 
     /**
-     * Define/overwrite the process.env variables by looping
-     * over the collection
+     * Then we pull everything until the closing brace, except
+     * the opening brace and trim off all white spaces.
      */
-    Object.keys(envCollection).forEach(key => {
-      if (process.env[key] === undefined || overwrite) {
-        process.env[key] = this._interpolate(envCollection[key], envCollection);
-      }
-    });
-  }
+    const varReference = token.slice(1, closingBrace).trim();
+
+    /**
+     * Getting the value of the reference inside the braces
+     */
+    return `${this._getValue(varReference, parsed)}${token.slice(
+      closingBrace + 1,
+    )}`;
+  },
 
   /**
-   * Get value for a key from the process.env. Since `process.env` object stores all
-   * values as strings, this method will cast them to their counterpart datatypes.
+   * Returns a value for a given key from the environment variable or the
+   * current parsed object.
    *
-   * | Value | Casted value |
-   * |------|---------------|
-   * | 'true' | true |
-   * | '1' | true |
-   * | 'on' | true |
-   * | 'false' | false |
-   * | '0' | false |
-   * | 'off' | false |
-   * | 'null' | null |
-   *
-   * Everything else is returned as a string.
-   *
-   * A default value can also be defined which is returned when original value
-   * is undefined.
-   *
-   * @method get
-   * @public
+   * @method _getValue
    *
    * @param {string} key
-   * @param {string|boolean|null|undefined} [defaultValue]
+   * @param {object} parsed
    *
-   * @returns {any}
-   *
-   * @example
-   * ```ts
-   * Env.get('PORT', 3333)
-   * ```
+   * @returns {string}
    */
-  get(key, defaultValue = null) {
-    const value = process.env[key];
+  _getValue(key, parsed) {
+    if (process.env[key]) return process.env[key];
 
-    if (value === undefined) {
-      return defaultValue;
-    }
+    if (parsed[key]) return this._interpolate(parsed[key], parsed);
 
-    return this._castValue(value);
-  }
+    return '';
+  },
 
   /**
-   * The method is similar to it's counter part [[get]] method. However, it will
-   * raise exception when the original value is non-existing.
+   * Initializes Env and processes env files
    *
-   * `undefined`, `null` and `empty strings` are considered as non-exisitng values.
-   *
-   * We recommended using this method for **environment variables** that are strongly
-   * required to run the application stably.
-   *
-   * @method getOrFail
-   * @public
-   *
-   * @param {string} key
-   * @param {any} [defaultValue=null]
-   *
-   * @returns {string|boolean}
-   *
-   * @example
-   * ```ts
-   * Env.getOrFail('PORT', 3333)
-   * ```
+   * @returns {ThisType}
    */
-  getOrFail(key, defaultValue) {
-    const value = this.get(key, defaultValue);
+  init() {
+    const envData = existsSync(this._envPath)
+      ? readFileSync(this._envPath, 'utf-8')
+      : '';
+    const testEnvData = existsSync(this._testEnvPath)
+      ? readFileSync(this._testEnvPath, 'utf-8')
+      : '';
 
-    if (!value && value !== false) {
-      const e = new Error(`Make sure to define environment variable ${key}`);
-      e.name = 'MISSING_ENV_KEY';
-      throw e;
-    }
+    Env.process(envData);
+    if (process.env.NODE_ENV === 'testing') Env.process(testEnvData, true);
 
-    return value;
-  }
+    return this;
+  },
+};
 
-  /**
-   * Update or set value for a given property
-   * inside `process.env`.
-   *
-   * @method set
-   * @public
-   *
-   * @param {string} key
-   * @param {any} value
-   *
-   * @returns {void}
-   *
-   * @example
-   * ```ts
-   * Env.set('PORT', 3333)
-   * ```
-   */
-  set(key, value) {
-    process.env[key] = this._interpolate(value, {});
-  }
-}
+Env.set('NODE_ENV', Env.get('NODE_ENV', 'development'));
 
-module.exports = Env;
-
-/**
- * @typedef {object} EnvContents
- * @property {object} envContents
- * @property {object} testEnvContents
- */
+const initializedEnv = Env.init();
+export const EnvObject = Env;
+export const defaultEnv = initializedEnv;
+export default initializedEnv;

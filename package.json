@@ -8,12 +8,12 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "nodemon src/start.js",
+    "dev": "nodemon src/index.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
-    "test": "jest --bail",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:related": "jest --findRelatedTests",
+    "test": "jest --runInBand --bail",
+    "test:watch": "jest --runInBand --watch",
+    "test:coverage": "jest --runInBand --coverage",
+    "test:related": "jest --runInBand --findRelatedTests",
     "prerelease": "yarn run build",
     "release": "standard-version --infile \"docs/CHANGELOG.md\""
   },

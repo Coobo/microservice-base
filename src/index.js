@@ -1,38 +1,39 @@
-import Application from './app';
-import controller from './app/controller';
-import middleware from './app/middleware';
-import validate from './app/validate';
-import Config from './config';
-import Database from './db';
-import Container from './di';
-import Env from './env';
-import Factory from './factory';
-import Fake from './fake';
-import Logger from './log';
-import APILogger from './log/api';
-import ValidatorMiddleware from './middlewares/validator';
-import Server from './server';
-import Validator from './validator';
+import id from 'uuid/v4';
 
-const asClass = Container.resolve('asClass');
-const asFunction = Container.resolve('asFunction');
-const asValue = Container.resolve('asValue');
+import app from './app';
+import config from './config';
+import db from './db';
+import env from './env';
+import factory from './factory';
+import fake from './fake';
+import logger from './logger';
+import validatorMiddleware from './middlewares/validator';
+import server from './server';
+import capitalizeString from './utils/capitalize-string';
+import dbUri from './utils/db-uri';
+import esmRequire from './utils/esm-require';
+import esmResolve from './utils/esm-resolve';
+import requireAll from './utils/require-all';
+import { appRoot, pathTo } from './utils/root';
+import validator from './validator';
 
-Container.register({
-  Application: asClass(Application).singleton(),
-  Config: asClass(Config).singleton(),
-  controller: asFunction(controller).singleton(),
-  Database: asFunction(Database).singleton(),
-  Env: asClass(Env).singleton(),
-  Factory: asClass(Factory).singleton(),
-  fake: asValue(Fake),
-  Logger: asFunction(Logger).singleton(),
-  APILogger: asFunction(APILogger).singleton(),
-  middleware: asFunction(middleware).singleton(),
-  Server: asClass(Server).singleton(),
-  validate: asFunction(validate).singleton(),
-  Validator: asValue(Validator),
-  ValidatorMiddleware: asValue(ValidatorMiddleware),
-});
-
-module.exports = Container;
+export default {
+  id,
+  appRoot,
+  pathTo,
+  app,
+  config,
+  db,
+  env,
+  factory,
+  fake,
+  logger,
+  server,
+  capitalizeString,
+  dbUri,
+  esmRequire,
+  esmResolve,
+  requireAll,
+  validator,
+  validatorMiddleware,
+};

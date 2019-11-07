@@ -1,7 +1,9 @@
-const Youch = require('youch');
+import Youch from 'youch';
+
+import config from '../config';
 
 /**
- * Middleware responsible for identifying incoming requests.
+ * Middleware responsible for catching api errors.
  *
  * @middleware
  * @function ExceptionHandlerMiddleware
@@ -10,7 +12,7 @@ const Youch = require('youch');
  * @async
  * @type {import('express').ErrorRequestHandler}
  *
- * @param {import('express').Errback} req
+ * @param {import('express').Errback} err
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
@@ -19,10 +21,7 @@ const Youch = require('youch');
  */
 async function ExceptionHandlerMiddleware(err, req, res, next) {
   req.log.error({ msg: 'An error ocurred while operating the request.', err });
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.NODE_ENV === 'testing'
-  ) {
+  if (['development', 'testing'].includes(config.get('env'))) {
     const errors = await new Youch(err, req).toJSON();
 
     return res.status(500).json(errors);

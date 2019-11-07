@@ -1,23 +1,13 @@
-import path from 'path';
+import { join } from 'path';
 
-import container from '../../src/di';
-import env from '../../src/env';
+import { EnvObject } from '../../src/env';
 
-const asValue = container.resolve('asValue');
-const asClass = container.resolve('asClass');
-container.register({
-  Env: asClass(env),
-  appRoot: asValue(path.join(__dirname, 'env')),
-});
+EnvObject._envPath = join(__dirname, 'env/.env');
+EnvObject._testEnvPath = join(__dirname, 'env/.env.test');
+const Env = EnvObject.init();
 
-let Env;
-
-beforeEach(() => {
-  Env = container.resolve('Env');
-});
-
-describe('Env Class', () => {
-  it('should have loaded .env file on appRoot', () => {
+describe('Env', () => {
+  it('should have loaded .env file on _envPath', () => {
     expect(Env.get('APP_ENV')).toBe('testing');
   });
 
@@ -58,9 +48,12 @@ describe('Env Class', () => {
     expect(Env.getOrFail('APP_TEST_THREE')).toBe(true);
   });
 
-  it('should throw an error when no .env file is found', () => {
-    const fn = () => env({ appRoot: '/' });
-    expect(fn).toThrow();
+  it('should ignore when no .env file is found', () => {
+    const env = EnvObject;
+    env._envPath = '/.env.not.existing';
+    const fn = () => env.init();
+
+    expect(fn).not.toThrow();
   });
 
   it('should replace .env with .env.testing values', () => {

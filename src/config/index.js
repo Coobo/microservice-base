@@ -1,39 +1,96 @@
-const get = require('lodash.get');
-const mergeWith = require('lodash.mergewith');
-const set = require('lodash.set');
+import get from 'lodash.get';
+import mergeWith from 'lodash.mergewith';
+import set from 'lodash.set';
 
-class Config {
+import Env from '../env';
+import esmResolve from '../utils/esm-resolve';
+import requireAll from '../utils/require-all';
+import { pathTo } from '../utils/root';
+
+const CONFIG_PATH = Env.get(
+  'CONFIG_PATH',
+  pathTo(
+    ['development', 'testing'].includes(Env.get('NODE_ENV', 'development'))
+      ? 'src'
+      : 'dist',
+    'config',
+  ),
+);
+
+/**
+ * @name Config
+ */
+const Config = {
   /**
-   * Constructs the Config class
+   * An array with all configuration objects available.
    *
-   * @param {object} DependencyInjection
-   * @param {import('../di')} DependencyInjection.Container
-   * @param {import('@coobo/app')} DependencyInjection.Application
+   * @type {object[]}
+   * @private
    */
-  constructor({ Container, Application, requireAll, esmResolver }) {
-    const configPath = Application.configPath();
-    this._config = requireAll({
-      dirname: configPath,
-      resolve: mod => {
-        mod = esmResolver(mod);
-        if (typeof mod === 'function') mod = mod(Container.cradle);
-        return mod;
-      },
-    });
-  }
+  _config: requireAll({
+    dirname: CONFIG_PATH,
+    resolve: mod => {
+      const resolvedModule = esmResolve(mod);
+      return typeof resolvedModule === 'function'
+        ? resolvedModule(Env)
+        : resolvedModule;
+    },
+  }),
 
+  /**
+   * Reference to the Env Object.
+   *
+   * @type {Env}
+   * @private
+   */
+  _env: Env,
+
+  /**
+   * Gets a configuration or returns a defaultValue if the requests config is
+   * not available.
+   *
+   * @param {string} key
+   * @param {*} [defaultValue=null]
+   *
+   * @returns {*}
+   */
   get(key, defaultValue = null) {
     return get(this._config, key, defaultValue);
-  }
+  },
 
+  /**
+   * Merges a configuration key with default values using a customizer.
+   *
+   * @param {string} key
+   * @param {object} defaultValues
+   * @param {function} [customizer=null]
+   *
+   * @returns {*}
+   */
   merge(key, defaultValues, customizer = null) {
     return mergeWith(defaultValues, this.get(key), customizer);
-  }
+  },
 
+  /**
+   * Sets a configuration
+   *
+   * @param {string} key
+   * @param {*} value
+   *
+   * @returns {void}
+   */
   set(key, value) {
     set(this._config, key, value);
-  }
+  },
 
+  /**
+   * Sets a configuration merging it with previously set values.
+   *
+   * @param {string} key
+   * @param {*} value
+   *
+   * @returns {void}
+   */
   defaults(key, value) {
     const existingValue = this.get(key);
     if (existingValue) {
@@ -41,7 +98,9 @@ class Config {
     }
 
     this.set(key, value);
-  }
-}
+  },
+};
 
-module.exports = Config;
+Config.set('env', Env.get('NODE_ENV', 'development'));
+
+export default Config;

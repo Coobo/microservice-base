@@ -1,1 +1,1 @@
-export default ({ Container }) => ({ conf: Container });
+export default Env => ({ conf: Env });

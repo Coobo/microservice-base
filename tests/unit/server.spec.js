@@ -1,48 +1,18 @@
-import path from 'path';
 import request from 'supertest';
 
 import config from '../../src/config';
-import container from '../../src/di';
-import env from '../../src/env';
-import Logger from '../../src/log';
-import APILogger from '../../src/log/api';
 import server from '../../src/server';
 
-const asClass = container.resolve('asClass');
-const asFunction = container.resolve('asFunction');
-const asValue = container.resolve('asValue');
-container.register({
-  appRoot: asValue(path.join(__dirname, 'env')),
-  Application: asClass(
-    class App {
-      configPath() {
-        return path.join(__dirname, 'config-path');
-      }
-    },
-  ),
-  Env: asClass(env).singleton(),
-  Config: asClass(config).singleton(),
-  Server: asClass(server).singleton(),
-  Logger: asFunction(Logger).singleton(),
-  APILogger: asFunction(APILogger).singleton(),
-});
+server.init();
 
-let Server;
-
-beforeEach(() => {
-  Server = container.resolve('Server');
-});
-
-describe('Server Class', () => {
+describe('server', () => {
   it('Should have registered default configs', () => {
-    const c = container.resolve('Config');
-
-    expect(typeof c.get('server')).toBe('object');
-    expect(typeof c.get('server.cors')).toBe('object');
+    expect(typeof config.get('server')).toBe('object');
+    expect(typeof config.get('server.cors')).toBe('object');
   });
 
   it('should have registered /status route', done => {
-    request(Server._express)
+    request(server._express)
       .get('/status')
       .expect('Content-Type', /text/)
       .expect('Content-Length', '2')
@@ -50,7 +20,7 @@ describe('Server Class', () => {
   });
 
   it('should have set the request identifier middleware', done => {
-    request(Server._express)
+    request(server._express)
       .get('/status')
       .expect('Content-Type', /text/)
       .expect('Content-Length', '2')
@@ -59,8 +29,8 @@ describe('Server Class', () => {
   });
 
   it('should should throw an error and return Youch object', done => {
-    Server._registerErrorHandler();
-    request(Server._express)
+    server._exceptionHandler();
+    request(server._express)
       .get('/error')
       .expect('Content-Type', /json/)
       .expect('Request-Id', /(.*-?)+/)
@@ -72,7 +42,7 @@ describe('Server Class', () => {
   });
 
   it('should open a new router', () => {
-    const router = Server.openRouter();
+    const router = server.openRouter();
 
     expect(typeof router.get).toBe('function');
     expect(typeof router.post).toBe('function');
@@ -82,15 +52,15 @@ describe('Server Class', () => {
   });
 
   it('should register a new router and make the endpoint available', done => {
-    const router = Server.openRouter();
+    const router = server.openRouter();
 
     router.get('/children', (req, res) =>
       res.status(200).json({ message: 'ok' }),
     );
 
-    Server.useRouter('/parent', router);
+    server.useRouter('/parent', router);
 
-    request(Server._express)
+    request(server._express)
       .get('/parent/children')
       .expect('Content-Type', /json/)
       .expect('Request-Id', /(.*-?)+/)

@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import { MongoMemoryServer } from 'mongodb-memory-server-global';
 
-const testEnv = dotenv.parse(fs.readFileSync('.env.testing'));
+const testEnv = dotenv.parse(fs.readFileSync('.env.test'));
 
 export default async () => {
   const mongod = new MongoMemoryServer({
