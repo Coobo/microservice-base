@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-a.1](https://github.com/Coobo/microservice-base/compare/v2.0.0-a.0...v2.0.0-a.1) (2019-11-07)
+
+
+### Bug Fixes
+
+* index exports in parts now ([7e19815](https://github.com/Coobo/microservice-base/commit/7e198150d1e3d4e2a92e0cc895ad557a824e0876))
+
 ## [2.0.0-a.0](https://github.com/Coobo/microservice-base/compare/v1.8.1...v2.0.0-a.0) (2019-11-07)
 
 
