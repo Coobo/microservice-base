@@ -172,7 +172,7 @@ interface ModelTMap {
   [key: string]: typeof Model;
 }
 
-interface db {
+export interface db {
   _connection: Connection;
   _uri: string;
   _options: ConnectionOptions;
@@ -186,9 +186,9 @@ interface db {
   load(modelPath: string, name?: string): void;
 }
 
-export namespace db {
-  export = db;
-}
+// export namespace db {
+//   export = db;
+// }
 
 export namespace queue {
   export interface Queue {
