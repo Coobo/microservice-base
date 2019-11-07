@@ -1,5 +1,6 @@
-const DatabaseFactory = require('./database-factory');
-const ModelFactory = require('./model-factory');
+import db from '../db';
+import fake from '../fake';
+import ModelFactory from './blueprint-model';
 
 /**
  * Factory class is used to define blueprints and then get model ou database
@@ -13,21 +14,11 @@ const ModelFactory = require('./model-factory');
  * @class Factory
  * @constructor
  */
-class Factory {
-  /**
-   * Constructs the Factory Class
-   *
-   * @constructor
-   * @param {object} Dependencies
-   * @param {import('@coobo/di')} Dependencies.Container
-   * @param {import('../index').FakeLibrary} Dependencies.fake
-   */
-  constructor({ Container, fake }) {
-    /** @type {Blueprint[]} */
-    this.blueprints = [];
-    this.Container = Container;
-    this.fake = fake;
-  }
+const Factory = {
+  /** @type {Blueprint[]} */
+  blueprints: [],
+  db,
+  fake,
 
   /**
    * Returns a string representing a model name
@@ -42,7 +33,7 @@ class Factory {
     return typeof nameOrModel === 'string'
       ? nameOrModel
       : nameOrModel.modelName;
-  }
+  },
 
   /**
    * Register a new blueprint providing a MongooseModel or a Mongoose Model's
@@ -52,7 +43,7 @@ class Factory {
    * @method blueprint
    *
    * @param {import('mongoose').Model|string} nameOrModel
-   * @param {function} callback
+   * @param {import('./blueprint-interface').BlueprintDataCallback} callback
    *
    * @chainable
    *
@@ -74,7 +65,7 @@ class Factory {
 
     this.blueprints.push({ name: this.getNameString(nameOrModel), callback });
     return this;
-  }
+  },
 
   /**
    * Returns the blueprint map with the map
@@ -89,7 +80,7 @@ class Factory {
   getBlueprint(nameOrModel) {
     const name = this.getNameString(nameOrModel);
     return this.blueprints.find(blueprint => blueprint.name === name);
-  }
+  },
 
   /**
    * Get model factory instance for a registered blueprint.
@@ -102,22 +93,8 @@ class Factory {
    */
   model(nameOrModel) {
     const blueprint = this.getBlueprint(nameOrModel);
-    return new ModelFactory(blueprint, this.fake, this.Container);
-  }
-
-  /**
-   * Get database factory instance for a registered blueprint.
-   *
-   * @method get
-   *
-   * @param {import('mongoose').Model|string} nameOrModel
-   *
-   * @return {DatabaseFactory}
-   */
-  get(nameOrModel) {
-    const blueprint = this.getBlueprint(nameOrModel);
-    return new DatabaseFactory(blueprint, this.fake, this.Container);
-  }
+    return new ModelFactory(blueprint, this.fake, this.db);
+  },
 
   /**
    * Clears all the registered blueprints
@@ -128,8 +105,8 @@ class Factory {
    */
   clear() {
     this.blueprints = [];
-  }
-}
+  },
+};
 
 module.exports = Factory;
 

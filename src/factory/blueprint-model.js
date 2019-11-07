@@ -16,10 +16,10 @@ class ModelFactory extends BluePrintInterface {
    * @param {import('./index').Blueprint} blueprint
    * @param {import('../fake')} fake
    */
-  constructor(blueprint, fake, Container) {
+  constructor(blueprint, fake, db) {
     super(blueprint.callback, fake);
     this.Model = blueprint.name;
-    this.Container = Container;
+    this.db = db;
   }
 
   /**
@@ -33,12 +33,9 @@ class ModelFactory extends BluePrintInterface {
    * @throws {Error}
    */
   getModel() {
-    if (this.Container.has(this.Model))
-      return this.Container.resolve(this.Model);
-    if (this.Container.has(`${this.Model}Model`))
-      return this.Container.resolve(`${this.Model}Model`);
+    if (this.db.has(this.Model)) return this.db.get(this.Model);
 
-    throw new Error('Specified model does not exist.');
+    throw new Error('The specified model does not exist.');
   }
 
   /**

@@ -51,7 +51,7 @@ module.exports = BluePrintInterface;
 
 /**
  * @callback BlueprintDataCallback
- * @param {object} fake
+ * @param {import('../fake')} fake
  * @param {number} index
  * @param {object} data
  */
