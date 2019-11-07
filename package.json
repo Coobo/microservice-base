@@ -9,7 +9,7 @@
   "private": false,
   "scripts": {
     "dev": "nodemon src/index.js",
-    "build": "sucrase ./src -d ./dist --transforms imports",
+    "build": "sucrase ./src -d ./dist --transforms imports && cp index.d.ts dist/",
     "test": "jest --runInBand --bail",
     "test:watch": "jest --runInBand --watch",
     "test:coverage": "jest --runInBand --coverage",
