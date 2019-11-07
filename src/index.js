@@ -18,7 +18,7 @@ import requireAll from './utils/require-all';
 import { appRoot, pathTo } from './utils/root';
 import validator from './validator';
 
-export default {
+exports.default = {
   id,
   appRoot,
   pathTo,
@@ -39,3 +39,23 @@ export default {
   validatorMiddleware,
   queue,
 };
+
+exports.id = id;
+exports.appRoot = appRoot;
+exports.pathTo = pathTo;
+exports.app = app;
+exports.config = config;
+exports.db = db;
+exports.env = env;
+exports.factory = factory;
+exports.fake = fake;
+exports.logger = logger;
+exports.server = server;
+exports.capitalizeString = capitalizeString;
+exports.dbUri = dbUri;
+exports.esmRequire = esmRequire;
+exports.esmResolve = esmResolve;
+exports.requireAll = requireAll;
+exports.validator = validator;
+exports.validatorMiddleware = validatorMiddleware;
+exports.queue = queue;
