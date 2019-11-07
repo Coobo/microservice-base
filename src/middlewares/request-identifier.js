@@ -1,4 +1,4 @@
-const uuid = require('uuid/v4');
+import uuid from 'uuid/v4';
 
 /**
  * Middleware responsible for identifying incoming requests.
@@ -21,4 +21,4 @@ async function RequestIdentifierMiddleware(req, res, next) {
   return next();
 }
 
-module.exports = RequestIdentifierMiddleware;
+export default RequestIdentifierMiddleware;

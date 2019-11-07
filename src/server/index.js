@@ -1,66 +1,89 @@
 import 'express-async-errors';
 
-const compression = require('compression');
-const cors = require('cors');
-const express = require('express');
-const fileUpload = require('express-fileupload');
-const helmet = require('helmet');
+import compression from 'compression';
+import cors from 'cors';
+import express from 'express';
+import fileUpload from 'express-fileupload';
+import helmet from 'helmet';
 
-const ContainerInjectorMiddleware = require('../middlewares/container-in-request');
-const InternalExceptionHandlerMiddleware = require('../middlewares/exception-handler');
-const InternalRequestIdentifierMiddleware = require('../middlewares/request-identifier');
+import config from '../config';
+import logger from '../logger';
+import apiLogger from '../logger/api';
+import exceptionHandlerMiddleware from '../middlewares/exception-handler';
+import requestIdentifierMiddleware from '../middlewares/request-identifier';
 
-/**
- * An Express server wrapper.
- *
- * @class
- * @singleton
- *
- * @group Application
- * @alias Server
- */
-class Server {
-  /**
-   * @constructor
-   *
-   * @param {object} DependencyInjection
-   * @param {import('@coobo/config').Config} DependencyInjection.Config
-   */
-  constructor({ Config, APILogger }) {
-    this._config = Config;
-    this._express = express();
-    this._middlewares = {
-      exceptionHandler: InternalExceptionHandlerMiddleware,
-      requestIdentifier: InternalRequestIdentifierMiddleware,
-      containerInjector: ContainerInjectorMiddleware,
-    };
+config.defaults('server', {
+  proxy: true,
+  compression: true,
+  cors: {
+    enabled: true,
+    origins: ['localhost', '127.0.0.1'],
+    methods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'Needed-Permissions',
+      'RequestID',
+    ],
+  },
+  req: { types: ['json'] },
+});
 
-    this._setConfigDefaults();
+const Server = {
+  _express: express(),
+  _compression() {
+    if (config.get('server.compression')) this.use(compression());
+  },
+  _security() {
+    this._express.disable('x-powered-by');
+    this.use(helmet());
+  },
+  _proxy() {
+    if (config.get('server.proxy') === true) {
+      this._express.set('trust proxy', true);
+      this._express.set('trust proxy', 'loopback');
+    }
+  },
+  _statusRoute() {
+    this._express.get('/status', (req, res) => res.sendStatus(200));
+    this._express.get('/error', () => {
+      throw new Error('Error route reached');
+    });
+  },
+  _cors() {
+    if (config.get('server.cors.enabled', true)) {
+      const options = {
+        origin: config.get('server.cors.origins'),
+        methods: config.get('server.cors.methods'),
+        allowedHeaders: config.get('server.cors.allowedHeaders'),
+      };
+      this._express.options('*', cors(options));
+      this.use(cors(options));
+    }
+  },
+  _parsers() {
+    const requestTypes = config.get('server.req.types');
 
-    this._enableCompression();
-    this._ensureSecurityStandards();
-    this._enableProxy();
-    this._enableCORS();
-    this._enableRequestParsers();
-
-    this.use(this._middlewares.requestIdentifier);
-    this.use(this._middlewares.containerInjector);
-    this.use(APILogger);
-    this._enableStatusRoute();
-  }
-
-  /**
-   * Boots up the server
-   *
-   * @method boot
-   * @public
-   *
-   * @returns {express.Server}
-   */
-  boot() {
-    this._registerErrorHandler();
-    return this._express.listen(this._config.get('app.port', 3000));
-  }
+    if (requestTypes.includes('raw')) this.use(express.raw());
+    if (requestTypes.includes('text')) this.use(express.text());
+    if (requestTypes.includes('urlencoded'))
+      this.use(
+        express.urlencoded({
+          limit: '50mb',
+          extended: true,
+          parameterLimit: 50000,
+        }),
+      );
+    if (requestTypes.includes('json'))
+      this.use(express.json({ limit: '50mb' }));
+    if (requestTypes.includes('file')) this.use(fileUpload());
+  },
+  _exceptionHandler() {
+    this.use(exceptionHandlerMiddleware);
+  },
 
   /**
    * A proxy method for express.use
@@ -74,7 +97,31 @@ class Server {
    */
   use(...middlewares) {
     middlewares.forEach(middleware => this._express.use(middleware));
-  }
+  },
+
+  init() {
+    this._compression();
+    this._security();
+    this._proxy();
+    this._cors();
+    this._parsers();
+
+    this.use(requestIdentifierMiddleware);
+
+    this.use(apiLogger);
+    this._statusRoute();
+  },
+
+  boot() {
+    this._exceptionHandler();
+    const PORT = config.get('app.port', 3000);
+
+    return this._express.listen(PORT, () =>
+      logger.info(
+        `${config.get('app.name', 'Apllication')} listening to port ${PORT}.`,
+      ),
+    );
+  },
 
   /**
    * Open Router
@@ -86,7 +133,7 @@ class Server {
    */
   openRouter() {
     return new express.Router();
-  }
+  },
 
   /**
    * Use Router
@@ -99,143 +146,9 @@ class Server {
    *
    * @returns {void}
    */
-  useRouter(basePath = '/', router) {
-    this._express.use(basePath, router);
-  }
+  useRouter(...params) {
+    this._express.use(...params);
+  },
+};
 
-  _setConfigDefaults() {
-    this._config.defaults('server', {
-      proxy: true,
-      compression: true,
-      cors: {
-        enabled: true,
-        origins: ['localhost', '127.0.0.1'],
-        methods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        allowedHeaders: [
-          'Origin',
-          'X-Requested-With',
-          'Content-Type',
-          'Accept',
-          'Authorization',
-          'Needed-Permissions',
-          'RequestID',
-        ],
-      },
-      req: { types: ['json'] },
-    });
-  }
-
-  /**
-   * Ensures the security standards and applies helmet
-   *
-   * @method _ensureSecurityStandards
-   * @private
-   *
-   * @returns {void}
-   */
-  _ensureSecurityStandards() {
-    this._express.disable('x-powered-by');
-    this.use(helmet());
-  }
-
-  /**
-   * Enables the proxy trust for the server
-   *
-   * @method _enableProxy
-   * @private
-   *
-   * @returns {void}
-   */
-  _enableProxy() {
-    if (this._config.get('server.proxy') === true) {
-      this._express.set('trust proxy', true);
-      this._express.set('trust proxy', 'loopback');
-    }
-  }
-
-  /**
-   * Enables a `/status` route.
-   *
-   * @method _enableStatusRoute
-   * @private
-   *
-   * @returns{void}
-   */
-  _enableStatusRoute() {
-    this._express.get('/status', (req, res) => res.sendStatus(200));
-    this._express.get('/error', () => {
-      throw new Error('Error route reached');
-    });
-  }
-
-  /**
-   * Enabled GZIP compression for all routes.
-   *
-   * @method _enableCompression
-   * @private
-   *
-   * @returns {void}
-   */
-  _enableCompression() {
-    if (this._config.get('server.compression')) this.use(compression());
-  }
-
-  /**
-   * Enabled CORS for all routes.
-   *
-   * @method _enableCORS
-   * @private
-   *
-   * @returns {void}
-   */
-  _enableCORS() {
-    if (this._config.get('server.cors.enabled', true)) {
-      const options = {
-        origin: this._config.get('server.cors.origins'),
-        methods: this._config.get('server.cors.methods'),
-        allowedHeaders: this._config.get('server.cors.allowedHeaders'),
-      };
-      this._express.options('*', cors(options));
-      this.use(cors(options));
-    }
-  }
-
-  /**
-   * Enables requests parsers.
-   *
-   * @method _enableRequestParsers
-   * @private
-   *
-   * @returns {void}
-   */
-  _enableRequestParsers() {
-    const config = this._config.get('server.req.types', ['json']);
-
-    if (config.includes('raw')) this.use(express.raw());
-    if (config.includes('text')) this.use(express.text());
-    if (config.includes('urlencoded'))
-      this.use(
-        express.urlencoded({
-          limit: '50mb',
-          extended: true,
-          parameterLimit: 50000,
-        }),
-      );
-    if (config.includes('json')) this.use(express.json({ limit: '50mb' }));
-    if (config.includes('file')) this.use(fileUpload());
-  }
-
-  /**
-   * Registers the Error Handler Middleware
-   *
-   * @method _registerErrorHandler
-   * @private
-   *
-   * @returns {void}
-   */
-  _registerErrorHandler() {
-    this.use(this._middlewares.exceptionHandler);
-  }
-}
-
-module.exports = Server;
+export default Server;
