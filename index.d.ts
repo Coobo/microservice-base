@@ -100,7 +100,7 @@ export namespace env {
   /**
    * Initializes Env and processes env files
    */
-  export function init(): ThisType;
+  export function init(): typeof env;
 }
 
 export namespace config {
@@ -121,7 +121,7 @@ export namespace config {
   export function merge(
     key: string,
     defaultValues?: object,
-    customizer: function,
+    customizer?: Function,
   ): any;
 
   /**
@@ -193,7 +193,7 @@ export namespace queue {
     data: object,
     options: Bull.JobOptions,
   ): Bull.JobPromise;
-  export function queue(queue: Queue): ThisType;
+  export function queue(queue: Queue): typeof queue;
   export function init(): void;
   export function process(): void;
 }
