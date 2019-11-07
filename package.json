@@ -81,7 +81,7 @@
       "git add"
     ],
     "README.md": [
-      "doctoc README.md --title=## Table of contents",
+      "doctoc README.md --title=\"## Table of contents\"",
       "git add"
     ]
   }
