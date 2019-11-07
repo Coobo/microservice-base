@@ -153,15 +153,18 @@ export namespace server {
 }
 
 export namespace db {
+  export interface ModelTMap {
+    [key: string]: typeof Model;
+  }
   export const _connection: Connection;
   export const _uri: string;
   export const _options: ConnectionOptions;
-  export const models: Model[];
+  export const models: ModelTMap;
   export const mongoose: Mongoose;
 
   export function connect(): void;
-  export function get(name: string): Model;
-  export function add(model: Model, name?: string): void;
+  export function get(name: string): typeof Model;
+  export function add(model: typeof Model, name?: string): void;
   export function has(name: string): boolean;
   export function load(modelPath: string, name?: string): void;
 }
@@ -177,7 +180,11 @@ export namespace queue {
     options?: Bull.JobOptions;
   }
 
-  export const _queues: Map<string, Queue>;
+  export interface QueueMap {
+    [key: string]: Queue;
+  }
+
+  export const _queues: QueueMap;
   export const _redisConfig: object;
   export const queuesArray: Bull.Queue[];
 
