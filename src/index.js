@@ -7,6 +7,7 @@ import env from './env';
 import factory from './factory';
 import fake from './fake';
 import logger from './logger';
+import validatorMiddleware from './middlewares/validator';
 import server from './server';
 import capitalizeString from './utils/capitalize-string';
 import dbUri from './utils/db-uri';
@@ -34,4 +35,5 @@ export default {
   esmResolve,
   requireAll,
   validator,
+  validatorMiddleware,
 };
