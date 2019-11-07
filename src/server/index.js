@@ -1,5 +1,6 @@
 import 'express-async-errors';
 
+import BullBoard from 'bull-board';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
@@ -11,6 +12,7 @@ import logger from '../logger';
 import apiLogger from '../logger/api';
 import exceptionHandlerMiddleware from '../middlewares/exception-handler';
 import requestIdentifierMiddleware from '../middlewares/request-identifier';
+import queue from '../queue';
 
 config.defaults('server', {
   proxy: true,
@@ -86,6 +88,18 @@ const Server = {
   },
 
   /**
+   * If queue is enabled, adds a queue admin panel to routes.
+   *
+   * @returns {void}
+   */
+  _board() {
+    if (config.get('queue.enabled')) {
+      BullBoard.setQueues(queue.queuesArray);
+      this.useRouter('/admin/queues', BullBoard.UI);
+    }
+  },
+
+  /**
    * A proxy method for express.use
    *
    * @method use
@@ -110,6 +124,7 @@ const Server = {
 
     this.use(apiLogger);
     this._statusRoute();
+    this._board();
   },
 
   boot() {
