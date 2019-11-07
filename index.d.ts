@@ -29,7 +29,12 @@ export function dbUri(
 
 export const logger: Logger;
 
-export const fake: typeof Chance;
+interface fake extends Chance.Chance {
+  cnpj(punctuation?: boolean): string;
+  cpf(punctuation?: boolean): string;
+}
+
+export const fake: fake;
 
 export namespace env {
   /** The path to .env file */
@@ -163,21 +168,26 @@ export namespace server {
   export function useRouter(...params: Router[] | string[]): void;
 }
 
-export namespace db {
-  export interface ModelTMap {
-    [key: string]: typeof Model;
-  }
-  export const _connection: Connection;
-  export const _uri: string;
-  export const _options: ConnectionOptions;
-  export const models: ModelTMap;
-  export const mongoose: Mongoose;
+interface ModelTMap {
+  [key: string]: typeof Model;
+}
 
-  export function connect(): void;
-  export function get(name: string): typeof Model;
-  export function add(model: typeof Model, name?: string): void;
-  export function has(name: string): boolean;
-  export function load(modelPath: string, name?: string): void;
+interface db {
+  _connection: Connection;
+  _uri: string;
+  _options: ConnectionOptions;
+  models: ModelTMap;
+  mongoose: Mongoose;
+
+  connect(): void;
+  get(name: string): typeof Model;
+  add(model: typeof Model, name?: string): void;
+  has(name: string): boolean;
+  load(modelPath: string, name?: string): void;
+}
+
+export namespace db {
+  export = db;
 }
 
 export namespace queue {
@@ -256,7 +266,7 @@ export namespace factory {
       db: typeof db,
     ): BlueprintModel;
     Model: string;
-    db: typeof db;
+    db: db;
 
     getModel(): typeof Model;
     instantiateModel(attributes: object): typeof Document.prototype;
