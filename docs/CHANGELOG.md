@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-a.0](https://github.com/Coobo/microservice-base/compare/v1.8.1...v2.0.0-a.0) (2019-11-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* config no longer requires to be initialized with new keyword.
+* env now is a object and not a class anymore.
+
+### Features
+
+* add new database interface ([2e9edeb](https://github.com/Coobo/microservice-base/commit/2e9edeb6f33c428ec53e248be685cce755a2b860))
+* add new factory interface ([305a7a5](https://github.com/Coobo/microservice-base/commit/305a7a5f70eb7942ec0753cbd9ba0f80b14867b3))
+* add new server interface ([904977a](https://github.com/Coobo/microservice-base/commit/904977afb07aea646372d2a59ff79a1a79e82a5b))
+* add queue feature ([c6e8f6f](https://github.com/Coobo/microservice-base/commit/c6e8f6f854a5ddd354638894ef3d5973af1a04a3))
+* index interface updated ([0f185d9](https://github.com/Coobo/microservice-base/commit/0f185d99b8110ee9234d44b415dff06c1d92d02b))
+* new app interface ([c5b0343](https://github.com/Coobo/microservice-base/commit/c5b03439b1dc0aaa969028a092892bb8a17a96df))
+* new config interface ([fe66136](https://github.com/Coobo/microservice-base/commit/fe661369393f53aaf0a6c14f31f2c903261bea1a))
+* new environment interface ([28aef64](https://github.com/Coobo/microservice-base/commit/28aef6431ea21974d291ed3a064ee6fa219844ee))
+* new logger interface ([2d2c539](https://github.com/Coobo/microservice-base/commit/2d2c53983c70c4f525923f3baf27fa8258af81b3))
+* new util functions ([0110ef9](https://github.com/Coobo/microservice-base/commit/0110ef9c39c4130e83e6ed5815dfd864f435dc79))
+* validator middleware exported from index ([4dcad39](https://github.com/Coobo/microservice-base/commit/4dcad395e74ecc6771ee1a943deefc52eadcb7fe))
+
+
+### Bug Fixes
+
+* config loadup in testing done outside of scope ([de5ed05](https://github.com/Coobo/microservice-base/commit/de5ed0573008f2b018d84077514b22d5df0de4e8))
+* expose queue from index ([93f180f](https://github.com/Coobo/microservice-base/commit/93f180fdf4c5a35ad322906e5ddcbc2e6597ed25))
+* readme title ([b6e8146](https://github.com/Coobo/microservice-base/commit/b6e81467616024816c25ba962cfb6ffecbf4a81e))
+* tests fixed ([34cbad9](https://github.com/Coobo/microservice-base/commit/34cbad99c722bff8ce8cacd2955dd9856c6bf5bb))
+
 ### [1.8.1](https://github.com/Coobo/microservice-base/compare/v1.8.0...v1.8.1) (2019-10-18)
 
 
