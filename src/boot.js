@@ -9,7 +9,7 @@ function boot() {
   logger.trace('Booting up application...');
 
   const requireOptions = {
-    dirname: app.domainsPath(),
+    dirname: app.domainsPath,
     resolve: (mod, path) => {
       logger.trace(`Loaded: ${path}`);
       return esmResolve(mod);
