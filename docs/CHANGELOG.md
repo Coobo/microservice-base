@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-alpha.5](https://github.com/Coobo/microservice-base/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2019-11-08)
+
+
+### Bug Fixes
+
+* boot function not having full access to app test env ([53f9438](https://github.com/Coobo/microservice-base/commit/53f9438f3f06579930b894481df32169a285a9d8))
+
 ## [2.0.0-alpha.4](https://github.com/Coobo/microservice-base/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2019-11-08)
 
 
