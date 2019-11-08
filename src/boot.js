@@ -22,7 +22,7 @@ function boot() {
 
   requireAll({ filter: /model\.js$/, ...requireOptions });
   requireAll({ filter: /routes\.js$/, ...requireOptions });
-  if (app.isTest) requireAll({ filter: /seeder\.js$/, ...requireOptions });
+  if (app.inTest) requireAll({ filter: /seeder\.js$/, ...requireOptions });
 
   return server;
 }
