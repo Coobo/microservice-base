@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-alpha.4](https://github.com/Coobo/microservice-base/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2019-11-08)
+
+
+### Bug Fixes
+
+* app.domainspath is not a function ([cb3c983](https://github.com/Coobo/microservice-base/commit/cb3c9836994b7483d2f265a3add44e24645bf0d5))
+
 ## [2.0.0-alpha.3](https://github.com/Coobo/microservice-base/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2019-11-08)
 
 
