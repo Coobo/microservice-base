@@ -69,4 +69,36 @@ describe('server', () => {
       })
       .expect(200, done);
   });
+
+  describe('server authentication', () => {
+    beforeEach(() =>
+      config.set('server.authentication.allowedKeys', ''.split(',')),
+    );
+
+    it('should default authentication method to key', () => {
+      expect(config.get('server.authentication.enabled')).toBeTruthy();
+      expect(config.get('server.authentication.useKey')).toBeTruthy();
+    });
+
+    it('should fail if a not allowed key is provided', done => {
+      request(server._express)
+        .get('/status')
+        .set('Key', 'notAllowedKey')
+        .expect('Content-Type', /json/)
+        .expect(res => {
+          res.body.message = config.get('response.messages.unauthorized');
+          res.body.reason = 'Invalid authentication key.';
+        })
+        .expect(401, done);
+    });
+
+    it('should succeed if a allowed key is provided', done => {
+      config.set('server.authentication.allowedKeys', ['allowed']);
+
+      request(server._express)
+        .get('/status')
+        .set('Key', 'allowed')
+        .expect(200, done);
+    });
+  });
 });

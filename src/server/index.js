@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import config from '../config';
 import logger from '../logger';
 import apiLogger from '../logger/api';
+import authenticationProviderMiddleware from '../middlewares/authentication-provider';
 import exceptionHandlerMiddleware from '../middlewares/exception-handler';
 import requestIdentifierMiddleware from '../middlewares/request-identifier';
 import queue from '../queue';
@@ -86,6 +87,9 @@ const Server = {
   _exceptionHandler() {
     this.use(exceptionHandlerMiddleware);
   },
+  _authProvider() {
+    this.use(authenticationProviderMiddleware);
+  },
 
   /**
    * If queue is enabled, adds a queue admin panel to routes.
@@ -122,6 +126,7 @@ const Server = {
 
     this.use(requestIdentifierMiddleware);
 
+    this._authProvider();
     this.use(apiLogger);
     this._statusRoute();
     this._board();
