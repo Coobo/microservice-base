@@ -63,7 +63,7 @@ function requireAll(incomingOptions) {
       const name = filterFile(file);
       if (!name) return;
 
-      modules[map(name, filePath)] = resolve(require(filePath));
+      modules[map(name, filePath)] = resolve(require(filePath), filePath);
     }
   });
 

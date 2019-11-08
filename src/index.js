@@ -1,6 +1,7 @@
 import id from 'uuid/v4';
 
 import app from './app';
+import boot from './boot';
 import config from './config';
 import db from './db';
 import env from './env';
@@ -19,6 +20,7 @@ import { appRoot, pathTo } from './utils/root';
 import validator from './validator';
 
 exports.default = {
+  boot,
   id,
   appRoot,
   pathTo,
@@ -40,22 +42,23 @@ exports.default = {
   queue,
 };
 
-exports.id = id;
-exports.appRoot = appRoot;
-exports.pathTo = pathTo;
 exports.app = app;
+exports.appRoot = appRoot;
+exports.boot = boot;
+exports.capitalizeString = capitalizeString;
 exports.config = config;
 exports.db = db;
-exports.env = env;
-exports.factory = factory;
-exports.fake = fake;
-exports.logger = logger;
-exports.server = server;
-exports.capitalizeString = capitalizeString;
 exports.dbUri = dbUri;
+exports.env = env;
 exports.esmRequire = esmRequire;
 exports.esmResolve = esmResolve;
+exports.factory = factory;
+exports.fake = fake;
+exports.id = id;
+exports.logger = logger;
+exports.pathTo = pathTo;
+exports.queue = queue;
 exports.requireAll = requireAll;
+exports.server = server;
 exports.validator = validator;
 exports.validatorMiddleware = validatorMiddleware;
-exports.queue = queue;

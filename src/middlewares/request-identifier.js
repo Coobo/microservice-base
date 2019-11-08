@@ -1,5 +1,7 @@
 import uuid from 'uuid/v4';
 
+import logger from '../logger';
+
 /**
  * Middleware responsible for identifying incoming requests.
  *
@@ -18,6 +20,7 @@ import uuid from 'uuid/v4';
 async function RequestIdentifierMiddleware(req, res, next) {
   res.header('Request-Id', req.get('Request-Id') || uuid());
   req.identifier = res.get('Request-Id');
+  req.log = logger.child({ requestId: res.get('Request-Id') });
   return next();
 }
 

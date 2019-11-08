@@ -13,6 +13,9 @@ config.defaults('app', {
   inStaging: ENV === 'staging',
   inDev: ENV === 'development',
   name: 'spendfy-service',
+  paths: {
+    domains: 'app/domains',
+  },
 });
 
 const Application = {
@@ -37,6 +40,10 @@ const Application = {
    */
   path(...paths) {
     return pathTo(this.folder, ...paths);
+  },
+
+  get domainsPath() {
+    return this.path(config.get('app.paths.domains'));
   },
 
   load() {

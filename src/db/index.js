@@ -121,6 +121,8 @@ const Database = {
     if (!name) name = model.modelName;
 
     this.models[name] = model;
+
+    return this.models[name];
   },
 
   /**
