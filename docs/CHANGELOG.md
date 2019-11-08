@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-alpha.3](https://github.com/Coobo/microservice-base/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2019-11-08)
+
+
+### Features
+
+* add boot function ([ad3f1a7](https://github.com/Coobo/microservice-base/commit/ad3f1a7f83393d25f17d9246640599e1391bf94c))
+
 ## [2.0.0-alpha.2](https://github.com/Coobo/microservice-base/compare/v2.0.0-alpha.1...v2.0.0-alpha.2) (2019-11-07)
 
 
