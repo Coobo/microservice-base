@@ -1,5 +1,13 @@
-import { Application, RequestHandler, Router } from 'express';
 import {
+  Application,
+  RequestHandler,
+  Router,
+  Express,
+  Request,
+  Response,
+  NextFunction,
+} from 'express';
+import mongoose, {
   Connection,
   ConnectionOptions,
   Model,
@@ -8,190 +16,187 @@ import {
 } from 'mongoose';
 import { Logger } from 'pino';
 import Bull from 'bull';
-import { Root } from '@hapi/joi';
+import { Root, StringSchema, Schema as HapiSchema } from '@hapi/joi';
 import { Chance } from 'chance';
+import uuid from 'uuid/v4';
 
 export as namespace Base;
 
-export function requireAll(paths: string[]): any;
-export function esmRequire(path: string): any;
-export function esmResolve(mod: any): any;
-export function capitalizeString(str: string): string;
-export const appRoot: string;
-export function pathTo(...paths: string[]): string;
-export function dbUri(
-  host: string,
-  port: string | number,
-  name: string,
-  user?: string,
-  password?: string,
-): string;
-
-export const logger: Logger;
-
-interface fake extends Chance.Chance {
-  cnpj(punctuation?: boolean): string;
-  cpf(punctuation?: boolean): string;
+declare namespace Fake {
+  interface fake extends Chance.Chance {
+    /** Generates a random cnpj. */
+    cnpj(punctuation?: boolean): string;
+    /** Generates a random cpf. */
+    cpf(punctuation?: boolean): string;
+  }
 }
 
-export const fake: fake;
+declare namespace Validator {
+  interface validator extends Root {
+    /** Validates a cnpj. */
+    cnpj(): StringSchema;
 
-export namespace env {
-  /** The path to .env file */
-  export const _envPath: string;
-  /** The path to .env.test file */
-  export const _testEnvPath: string;
-
-  /**
-   * Get value for a key from the process.env. Since `process.env` object stores all
-   * values as strings, this method will cast them to their counterpart datatypes.
-   *
-   * | Value | Casted value |
-   * |------|---------------|
-   * | 'true' | true |
-   * | '1' | true |
-   * | 'on' | true |
-   * | 'false' | false |
-   * | '0' | false |
-   * | 'off' | false |
-   * | 'null' | null |
-   *
-   * Everything else is returned as a string.
-   *
-   * A default value can also be defined which is returned when original value
-   * is undefined.
-   *
-   * @example
-   * ```ts
-   * Env.get('PORT', 3333)
-   * ```
-   */
-  export function get(
-    key: string,
-    defaultValue?: string | boolean | null | undefined,
-  ): any;
-
-  /**
-   * The method is similar to it's counter part [[get]] method. However, it will
-   * raise exception when the original value is non-existing.
-   *
-   * `undefined`, `null` and `empty strings` are considered as non-exisitng values.
-   *
-   * We recommended using this method for **environment variables** that are strongly
-   * required to run the application stably.
-   *
-   * @example
-   * ```ts
-   * Env.getOrFail('PORT', 3333)
-   * ```
-   */
-  export function getOrFail(
-    key: string,
-    defaultValue?: string | boolean | null | undefined,
-  ): any;
-
-  /**
-   * Update or set value for a given property
-   * inside `process.env`.
-   *
-   * @example
-   * ```ts
-   * Env.set('PORT', 3333)
-   * ```
-   */
-  export function set(key: string, value: any): void;
-
-  /**
-   * Process a string with .env definitions.
-   */
-  export function process(envContents: string, overwrite?: boolean): void;
-
-  /**
-   * Casts the string value to their native data type.
-   */
-  export function _castValue(
-    value: string,
-  ): string | boolean | null | undefined;
-
-  /**
-   * Initializes Env and processes env files
-   */
-  export function init(): typeof env;
+    /** Validates a cpf. */
+    cpf(): StringSchema;
+  }
 }
 
-export namespace config {
-  /**
-   * An array with all configuration objects available.
-   */
-  export var _config: object[];
+declare namespace Env {
+  interface env {
+    /** The path to .env file */
+    _envPath: string;
+    /** The path to .env.test file */
+    _testEnvPath: string;
 
-  /**
-   * Gets a configuration or returns a defaultValue if the requests config is
-   * not available.
-   */
-  export function get(key: string, defaultValue?: any): any;
+    /**
+     * Get value for a key from the process.env. Since `process.env` object stores all
+     * values as strings, this method will cast them to their counterpart datatypes.
+     *
+     * | Value | Casted value |
+     * |------|---------------|
+     * | 'true' | true |
+     * | '1' | true |
+     * | 'on' | true |
+     * | 'false' | false |
+     * | '0' | false |
+     * | 'off' | false |
+     * | 'null' | null |
+     *
+     * Everything else is returned as a string.
+     *
+     * A default value can also be defined which is returned when original value
+     * is undefined.
+     *
+     * @example
+     * ```ts
+     * Env.get('PORT', 3333)
+     * ```
+     */
+    get(key: string, defaultValue?: string | boolean | null | undefined): any;
 
-  /**
-   * Merges a configuration key with default values using a customizer.
-   */
-  export function merge(
-    key: string,
-    defaultValues?: object,
-    customizer?: Function,
-  ): any;
+    /**
+     * The method is similar to it's counter part [[get]] method. However, it will
+     * raise exception when the original value is non-existing.
+     *
+     * `undefined`, `null` and `empty strings` are considered as non-exisitng values.
+     *
+     * We recommended using this method for **environment variables** that are strongly
+     * required to run the application stably.
+     *
+     * @example
+     * ```ts
+     * Env.getOrFail('PORT', 3333)
+     * ```
+     */
+    getOrFail(
+      key: string,
+      defaultValue?: string | boolean | null | undefined,
+    ): any;
 
-  /**
-   * Sets a configuration.
-   */
-  export function set(key: string, value: any): void;
+    /**
+     * Update or set value for a given property
+     * inside `process.env`.
+     *
+     * @example
+     * ```ts
+     * Env.set('PORT', 3333)
+     * ```
+     */
+    set(key: string, value: any): void;
 
-  /**
-   * Sets a configuration merging it with previously set values.
-   */
-  export function defaults(key: string, value: any): void;
+    /**
+     * Process a string with .env definitions.
+     */
+    process(envContents: string, overwrite?: boolean): void;
+
+    /**
+     * Casts the string value to their native data type.
+     */
+    _castValue(value: string): string | boolean | null | undefined;
+
+    /**
+     * Initializes Env and processes env files
+     */
+    init(): typeof env;
+  }
 }
 
-export namespace server {
-  export const _express: Application;
-  export function _compression(): void;
-  export function _security(): void;
-  export function _proxy(): void;
-  export function _statusRoute(): void;
-  export function _cors(): void;
-  export function _parsers(): void;
-  export function _exceptionHandler(): void;
-  export function _board(): void;
-  export function use(...middlewares: RequestHandler[]): void;
-  export function init(): void;
-  export function boot(): void;
-  export function openRouter(): Router;
-  export function useRouter(...params: Router[] | string[]): void;
+declare namespace Config {
+  interface config {
+    /**
+     * An array with all configuration objects available.
+     */
+    _config: object[];
+
+    /**
+     * Reference to the Env Object.
+     */
+    _env: Env.env;
+
+    /**
+     * Gets a configuration or returns a defaultValue if the requests config is
+     * not available.
+     */
+    get(key: string, defaultValue?: any): any;
+
+    /**
+     * Merges a configuration key with default values using a customizer.
+     */
+    merge(key: string, defaultValues?: object, customizer?: Function): any;
+
+    /**
+     * Sets a configuration.
+     */
+    set(key: string, value: any): void;
+
+    /**
+     * Sets a configuration merging it with previously set values.
+     */
+    defaults(key: string, value: any): void;
+  }
 }
 
-interface ModelTMap {
-  [key: string]: typeof Model;
+declare namespace Server {
+  interface server {
+    _express: Express;
+    _compression(): void;
+    _security(): void;
+    _proxy(): void;
+    _statusRoute(): void;
+    _cors(): void;
+    _parsers(): void;
+    _exceptionHandler(): void;
+    _board(): void;
+    use(...middlewares: RequestHandler[]): void;
+    init(): void;
+    boot(): void;
+    openRouter(): Router;
+    useRouter(...params: Array<Router | string>): void;
+  }
 }
 
-export interface db {
-  _connection: Connection;
-  _uri: string;
-  _options: ConnectionOptions;
-  models: ModelTMap;
-  mongoose: Mongoose;
+declare namespace Db {
+  interface ModelTMap {
+    [key: string]: typeof Model;
+  }
 
-  connect(): void;
-  get(name: string): typeof Model;
-  add(model: typeof Model, name?: string): void;
-  has(name: string): boolean;
-  load(modelPath: string, name?: string): void;
+  interface db {
+    _connection: Mongoose;
+    _uri: string;
+    _options: ConnectionOptions;
+    models: ModelTMap;
+    mongoose: typeof mongoose;
+
+    connect(): void;
+    get(name: string): typeof Model;
+    add(model: typeof Model, name?: string): typeof Model;
+    has(name: string): boolean;
+    load(modelPath: string, name?: string): void;
+  }
 }
 
-// export namespace db {
-//   export = db;
-// }
-
-export namespace queue {
-  export interface Queue {
+declare namespace Queue {
+  interface Queue {
     key: string;
     handle(data: Bull.Job): null;
     name?: string;
@@ -199,74 +204,68 @@ export namespace queue {
     options?: Bull.JobOptions;
   }
 
-  export interface QueueMap {
+  interface QueueMap {
     [key: string]: Queue;
   }
 
-  export const _queues: QueueMap;
-  export const _redisConfig: object;
-  export const queuesArray: Bull.Queue[];
-
-  export function add(
-    key: string,
-    data: object,
-    options: Bull.JobOptions,
-  ): Bull.JobPromise;
-  export function queue(queue: Queue): typeof queue;
-  export function init(): void;
-  export function process(): void;
+  interface queue {
+    _queues: QueueMap;
+    _redisConfig: object;
+    queuesArray: Bull.Queue[];
+    queue(queue: Queue): typeof queue;
+    init(): void;
+    process(): void;
+    add(key: string, data: object, options: Bull.JobOptions): Bull.JobPromise;
+  }
 }
 
-export const validator: Root;
+declare namespace App {
+  interface app {
+    root: string;
+    folder: string;
+    env: string;
+    inTest: boolean;
+    inProd: boolean;
+    inStage: boolean;
+    inDev: boolean;
+    name: string;
+    package: object;
+    version: string;
+    coreVersion: string | undefined;
+    domainsPath: string;
 
-export namespace app {
-  export const root: string;
-  export const folder: string;
-  export const env: string;
-  export const inTest: boolean;
-  export const inProd: boolean;
-  export const inStage: boolean;
-  export const inDev: boolean;
-  export const name: string;
-  export const package: object;
-  export const version: string;
-  export const coreVersion: string | undefined;
-
-  export function path(...paths: string[]): string;
-  export function load(): void;
+    path(...paths: string[]): string;
+    load(): void;
+  }
 }
 
-export namespace factory {
-  function bluePrintCallback(
-    fake: typeof Chance,
+declare namespace Factory {
+  function blueprintCallback(
+    fake: Fake.fake,
     index: number,
     data: object,
   ): object;
 
   interface Blueprint {
     name: string;
-    callback: typeof bluePrintCallback;
+    callback: typeof blueprintCallback;
   }
 
   interface BlueprintInterface {
     new (
-      dataCallback: typeof bluePrintCallback,
-      fake: typeof Chance,
+      dataCallback: typeof blueprintCallback,
+      fake: Fake.fake,
     ): BlueprintInterface;
-    dataCallback: typeof bluePrintCallback;
-    fake: typeof Chance;
+    dataCallback: typeof blueprintCallback;
+    fake: Fake.fake;
 
     makeOne(index: number, data: object): Promise<object>;
   }
 
   interface BlueprintModel extends BlueprintInterface {
-    new (
-      blueprint: Blueprint,
-      fake: typeof Chance,
-      db: typeof db,
-    ): BlueprintModel;
+    new (blueprint: Blueprint, fake: Fake.fake, db: Db.db): BlueprintModel;
     Model: string;
-    db: db;
+    db: Db.db;
 
     getModel(): typeof Model;
     instantiateModel(attributes: object): typeof Document.prototype;
@@ -283,16 +282,74 @@ export namespace factory {
     reset(): Promise<any>;
   }
 
-  export const blueprints: Blueprint[];
-  export const db: typeof db;
-  export const fake: typeof Chance;
+  interface factory {
+    blueprints: Blueprint[];
+    db: Db.db;
+    fake: Fake.fake;
 
-  export function getNameString(nameOrModel: typeof Model | string): string;
-  export function blueprint(
-    nameOrModel: typeof Model | string,
-    callback: typeof bluePrintCallback,
-  ): typeof factory;
-  export function getBlueprint(nameOrModel: typeof Model | string): Blueprint;
-  export function model(nameOrModel: typeof Model | string): BlueprintModel;
-  export function clear(): void;
+    getNameString(nameOrModel: typeof Model | string): string;
+    blueprint(
+      nameOrModel: typeof Model | string,
+      callback: typeof blueprintCallback,
+    ): typeof factory;
+    getBlueprint(nameOrModel: typeof Model | string): Blueprint;
+    model(nameOrModel: typeof Model | string): BlueprintModel;
+    clear(): void;
+  }
+}
+
+interface requireAllOptions {
+  /** The path to the directory. */
+  dirname: string;
+  /** Regular Expression used to decide wich directories to ignore. */
+  excludeDirs?: RegExp;
+  /** Regular Expression used to decide wich files to import and to retrieve the module name. */
+  filter?: RegExp;
+  /** If set to true, requireAll will look in all subdirectories inside dirname. */
+  recursive?: boolean;
+  /** The function that will be used to resolve the module after beign required. */
+  resolve?: (requiredModule: any, filePath: string) => any;
+  /** A map function that will be used to generate the module name. */
+  map?: (name: string, filePath: string) => any;
+  /** If set to true, the dirname does not need to exist. */
+  optional?: boolean;
+}
+
+export const app: App.app;
+export const appRoot: string;
+export function boot(): Server.server;
+export function capitalizeString(str: string, lowercaseRest: boolean): string;
+export const config: Config.config;
+export const db: Db.db;
+export function dbUri(
+  host: string,
+  port: string | number,
+  name: string,
+  user?: string,
+  password?: string,
+): string;
+export const env: Env.env;
+export function esmRequire(path: string): any;
+export function esmResolve(mod: any): any;
+export const factory: Factory.factory;
+export const fake: Fake.fake;
+export const id: typeof uuid;
+export const logger: Logger;
+export function pathTo(...paths: string[]): string;
+export const queue: Queue.queue;
+export function requireAll(incomingOptions: requireAllOptions | string): any[];
+export const server: Server.server;
+export const validator: Validator.validator;
+export function validatorMiddleware(
+  type: string,
+  schema: HapiSchema,
+): (req: Request, res: Response, next: NextFunction) => void;
+
+// Types to extend inside application
+export interface DomainValidator {
+  [key: string]: HapiSchema;
+}
+
+export interface DomainController {
+  [key: string]: (req: Request, res: Response, next?: NextFunction) => void;
 }
