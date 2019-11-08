@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-alpha.6](https://github.com/Coobo/microservice-base/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2019-11-08)
+
+
+### Bug Fixes
+
+* istest -> intest on boot ([b419b24](https://github.com/Coobo/microservice-base/commit/b419b246f3cd276c292b939ede799406e9344e8b))
+
 ## [2.0.0-alpha.5](https://github.com/Coobo/microservice-base/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2019-11-08)
 
 
