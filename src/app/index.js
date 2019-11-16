@@ -1,4 +1,7 @@
 import config from '../config';
+import logger from '../logger';
+import esmResolve from '../utils/esm-resolve';
+import requireAll from '../utils/require-all';
 import { appRoot as APP_ROOT, pathTo } from '../utils/root';
 
 const PACKAGE = require(pathTo('package.json'));
@@ -57,6 +60,27 @@ const Application = {
     this.inStage = config.get('app.inStaging');
     this.inDev = config.get('app.inDev');
     this.name = config.get('app.name');
+  },
+
+  boot({ server, db }) {
+    this.load();
+
+    const requireOptions = {
+      dirname: this.domainsPath,
+      resolve: (mod, path) => {
+        logger.trace(`Loaded: ${path}`);
+        return esmResolve(mod);
+      },
+    };
+
+    server.init();
+    db.connect();
+
+    requireAll({ filter: /model\.js$/, ...requireOptions });
+    requireAll({ filter: /routes\.js$/, ...requireOptions });
+    if (this.inTest) requireAll({ filter: /seeder\.js$/, ...requireOptions });
+
+    return server;
   },
 };
 

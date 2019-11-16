@@ -236,6 +236,7 @@ declare namespace App {
 
     path(...paths: string[]): string;
     load(): void;
+    boot(): Server.server;
   }
 }
 
